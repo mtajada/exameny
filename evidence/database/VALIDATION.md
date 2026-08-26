@@ -32,7 +32,7 @@ Date: 2026-08-26
 - administrative runtime migration SHA-256:
   `401702184b2f4409801ce493f5a53e3cf289c8b43981de4c707cf93b74589367`.
 - generated public types SHA-256:
-  `f9ce510ba8bc84da538c431f58e0dfafc48bf8cd8a0c7aa23a7bca710128a7ce`.
+  `b0be76cd7ae8c37c52a3a226ef26d05282b343f2857e03c5a2696c28d253682a`.
 
 The generation runtime was temporary and removed after the hashes were
 recorded. No hosted project was linked and no remote database was queried.
