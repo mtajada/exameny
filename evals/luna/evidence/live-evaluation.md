@@ -45,7 +45,7 @@ regression decisions; it does not replace a qualified teacher's judgement.
 ## Run history
 
 We retain every attempt because they show how manual review improved the
-harness and prevented a misleading perfect-safety claim.
+harness and prevented a misleading claim of complete safety.
 
 1. `luna-2026-08-26.json` failed before model-quality comparison was valid.
    Twelve requests returned HTTP 400 because two strict schemas included
