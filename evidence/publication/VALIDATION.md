@@ -8,9 +8,10 @@ tracked files and imports no private Git history.
 
 ## History and publication boundary
 
-- Gitleaks 8.30.1 scanned the root commit and found no leaks.
+- Gitleaks 8.30.1 scanned the complete public history and found no leaks.
 - A separate directory scan covered 7.89 MB and found no leaks.
-- The tracked tree contains no Cambridge, TOLES, or IELTS references.
+- The tracked tree contains no prohibited third-party examination-brand
+  references.
 - The tracked tree contains no maintainer email, expired project email, local
   home path, OpenAI organization or project ID, or environment file other than
   `.env.example`.
