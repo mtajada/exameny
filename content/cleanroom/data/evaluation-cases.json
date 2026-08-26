@@ -1,0 +1,122 @@
+{
+  "rubric": {
+    "scale": {
+      "0": "No usable evidence for this dimension",
+      "1": "Frequent problems prevent the intended result",
+      "2": "The intended result is partly achieved, with noticeable gaps",
+      "3": "The intended result is achieved clearly, despite limited lapses",
+      "4": "The intended result is achieved consistently and with effective control"
+    },
+    "dimensions": [
+      {
+        "id": "task-fulfilment",
+        "name": "Task fulfilment",
+        "focus": "Covers required points accurately and gives the reader enough information to respond or decide"
+      },
+      {
+        "id": "organisation",
+        "name": "Organisation and cohesion",
+        "focus": "Orders ideas purposefully and makes relationships between them easy to follow"
+      },
+      {
+        "id": "language-control",
+        "name": "Language control",
+        "focus": "Uses grammar, spelling, and punctuation accurately enough for effortless understanding"
+      },
+      {
+        "id": "range-precision",
+        "name": "Range and precision",
+        "focus": "Chooses sufficiently varied and exact vocabulary and structures for the level and purpose"
+      },
+      {
+        "id": "reader-awareness",
+        "name": "Reader awareness",
+        "focus": "Uses an appropriate tone, genre, and degree of explanation for the stated audience"
+      }
+    ]
+  },
+  "cases": [
+    {
+      "id": "CR_EVAL_B1_01",
+      "taskId": "CR_WRITE_B1_COMMUNITY_CLASS",
+      "level": "B1",
+      "learnerText": "Hi Jo,\n\nThe photo class is not at the library next week. It is at Green Square Community Centre on Tuesday at six o'clock. Please bring your phone or camera and one photo you like, because we will talk about light. I can meet you at the bus stop near the bakery at half past five. We can take the number 8 bus together. Tell me if that is good for you.\n\nSee you,\nAlex",
+      "expected": {
+        "scoreRanges": {
+          "task-fulfilment": [4, 4],
+          "organisation": [3, 4],
+          "language-control": [3, 4],
+          "range-precision": [3, 3],
+          "reader-awareness": [4, 4]
+        },
+        "mustMention": [
+          "All three practical points are covered",
+          "The meeting suggestion is specific and actionable"
+        ],
+        "priorityRevision": "Add one linking phrase to make the reason for bringing a photo flow more naturally."
+      }
+    },
+    {
+      "id": "CR_EVAL_B2_01",
+      "taskId": "CR_WRITE_B2_SHARED_EQUIPMENT",
+      "level": "B2",
+      "learnerText": "An equipment library could save residents money because they would not need to buy objects used only once or twice a year. It could also reduce waste: one reliable drill shared by many households may replace several cheap ones. However, the service would need a fair booking system and regular safety checks. These tasks cost time, so a trial should begin with a limited collection.\n\nThe council should fund a one-year trial focused on common, low-risk items. It could record how often objects are borrowed, repair costs and the number of people who attend short training sessions. If demand is strong but maintenance remains manageable, the collection could grow. This cautious approach would test the benefits without pretending that sharing equipment is free or simple.",
+      "expected": {
+        "scoreRanges": {
+          "task-fulfilment": [4, 4],
+          "organisation": [3, 4],
+          "language-control": [3, 4],
+          "range-precision": [3, 4],
+          "reader-awareness": [3, 4]
+        },
+        "mustMention": [
+          "The position is clear and qualified",
+          "Benefits and operational difficulty are linked to a practical trial design"
+        ],
+        "priorityRevision": "Develop one concrete resident example to make the social benefit less abstract."
+      }
+    },
+    {
+      "id": "CR_EVAL_C1_01",
+      "taskId": "CR_WRITE_C1_QUIET_STUDY_PROPOSAL",
+      "level": "C1",
+      "learnerText": "Purpose\nThis proposal suggests a six-week response to reports of unreliable quiet space. The library should first avoid assuming that total seat numbers are the only cause. Noise may travel from group areas, and students may struggle to identify free silent seats.\n\nRecommendations\nFirst, the second-floor west room should become a bookable quiet zone during the afternoon peak. Clear signs and a short booking window would discourage unused reservations. Second, the library website should show a simple occupancy estimate for each floor, updated by staff every thirty minutes.\n\nEvaluation\nFor two weeks, staff should record current occupancy, noise complaints and time spent searching for a seat. The same measures should then be collected for four weeks after the changes. A one-question exit survey could ask whether users found suitable space within ten minutes. The booking experiment should take priority because it directly creates a predictable quiet area; the occupancy display should follow once staff confirm that updates are sustainable.",
+      "expected": {
+        "scoreRanges": {
+          "task-fulfilment": [4, 4],
+          "organisation": [4, 4],
+          "language-control": [3, 4],
+          "range-precision": [3, 4],
+          "reader-awareness": [4, 4]
+        },
+        "mustMention": [
+          "The proposal distinguishes hypotheses from facts",
+          "The six-week test includes baseline and post-change evidence",
+          "The recommendations are prioritised"
+        ],
+        "priorityRevision": "Explain who would review the evidence and what threshold would justify keeping the changes."
+      }
+    },
+    {
+      "id": "CR_EVAL_C2_01",
+      "taskId": "CR_WRITE_C2_PUBLIC_DIALOGUE_REVIEW",
+      "level": "C2",
+      "learnerText": "The two formats distribute attention differently. Open Table gives a stable group enough time to test and revise claims, so it is better suited to questions that demand cumulative reasoning. That depth is only potential, however: the design facts tell us nothing about whether the facilitator prevented confident speakers from dominating.\n\nQuestion Trail lowers the cost of brief participation. Visitors can respond at their own pace, and the written stages may help those reluctant to enter a long spoken exchange. Yet movement through five stations can fragment thought, while the final conversation may be too short to reconcile contradictions. Neither prediction should be treated as an observed outcome.\n\nBefore choosing, organisers need participation patterns, withdrawal rates, speaking-time distribution, accessibility feedback and evidence that visitors understood perspectives other than their own. Open Table should be used for a defined group exploring one contested decision, provided facilitation quality is monitored. Question Trail is preferable at open events where reach and flexible entry matter, with a later synthesis session if deliberative depth is essential.",
+      "expected": {
+        "scoreRanges": {
+          "task-fulfilment": [4, 4],
+          "organisation": [4, 4],
+          "language-control": [4, 4],
+          "range-precision": [4, 4],
+          "reader-awareness": [4, 4]
+        },
+        "mustMention": [
+          "Known design features are separated from predicted outcomes",
+          "The recommendation is conditional and gives a practical decision rule",
+          "Missing evidence is specific and relevant"
+        ],
+        "priorityRevision": "No major revision is required; a brief sentence on resource demands would make the operational comparison more complete."
+      }
+    }
+  ]
+}

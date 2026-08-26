@@ -1,0 +1,119 @@
+{
+  "manifestVersion": 1,
+  "createdOn": "2026-08-26",
+  "creationMode": "clean-room",
+  "scope": "Original English-learning content and supporting model prompts",
+  "authoring": {
+    "commissionedBy": "Miguel Tajada Ferrer",
+    "draftedWith": "OpenAI Codex",
+    "createdOn": "2026-08-26",
+    "technicalReviewStatus": "passed",
+    "humanAdoptionStatus": "adopted-by-maintainer",
+    "publicationRule": "The maintainer authorized publication of the complete Exameny clean-room edition on 2026-08-26"
+  },
+  "sourceClasses": [
+    {
+      "class": "general-pedagogy",
+      "use": "Grammar, vocabulary, reading, writing, feedback, and study-skill design based on general educational knowledge"
+    },
+    {
+      "class": "proficiency-labels",
+      "use": "B1, B2, C1, and C2 labels used only to calibrate internally authored difficulty"
+    },
+    {
+      "class": "software-contract",
+      "use": "Primitive field names and eight generic layout shapes required for compatibility; no educational content reused"
+    }
+  ],
+  "excludedSourceClasses": [
+    "private exercise corpora",
+    "scanned or OCR-derived materials",
+    "examiner handbooks and answer keys",
+    "existing generation, evaluation, or coaching prompts",
+    "generated example caches",
+    "production data, logs, and learner records"
+  ],
+  "contentFiles": [
+    "data/exercises.json",
+    "data/writing-tasks.json",
+    "data/evaluation-cases.json",
+    "data/coaching-cases.json",
+    "data/security-cases.json",
+    "prompts/generate-exercise.md",
+    "prompts/evaluate-writing.md",
+    "prompts/coach-learner.md"
+  ],
+  "fileRecords": [
+    {
+      "path": "data/exercises.json",
+      "author": "OpenAI Codex under maintainer direction",
+      "createdOn": "2026-08-26",
+      "targetLevels": ["B1", "B2", "C1", "C2"],
+      "skill": "language use and reading",
+      "reviewStatus": "technical-review-passed"
+    },
+    {
+      "path": "data/writing-tasks.json",
+      "author": "OpenAI Codex under maintainer direction",
+      "createdOn": "2026-08-26",
+      "targetLevels": ["B1", "B2", "C1", "C2"],
+      "skill": "writing",
+      "reviewStatus": "technical-review-passed"
+    },
+    {
+      "path": "data/evaluation-cases.json",
+      "author": "OpenAI Codex under maintainer direction",
+      "createdOn": "2026-08-26",
+      "targetLevels": ["B1", "B2", "C1", "C2"],
+      "skill": "writing feedback",
+      "reviewStatus": "technical-review-passed"
+    },
+    {
+      "path": "data/coaching-cases.json",
+      "author": "OpenAI Codex under maintainer direction",
+      "createdOn": "2026-08-26",
+      "targetLevels": ["B1", "B2", "C1", "C2"],
+      "skill": "learner coaching",
+      "reviewStatus": "technical-review-passed"
+    },
+    {
+      "path": "data/security-cases.json",
+      "author": "OpenAI Codex under maintainer direction",
+      "createdOn": "2026-08-26",
+      "targetLevels": ["B1", "B2", "C1", "C2"],
+      "skill": "prompt-injection resilience",
+      "reviewStatus": "technical-review-passed"
+    },
+    {
+      "path": "prompts/generate-exercise.md",
+      "author": "OpenAI Codex under maintainer direction",
+      "createdOn": "2026-08-26",
+      "targetLevels": ["B1", "B2", "C1", "C2"],
+      "skill": "exercise generation",
+      "reviewStatus": "technical-review-passed"
+    },
+    {
+      "path": "prompts/evaluate-writing.md",
+      "author": "OpenAI Codex under maintainer direction",
+      "createdOn": "2026-08-26",
+      "targetLevels": ["B1", "B2", "C1", "C2"],
+      "skill": "writing evaluation",
+      "reviewStatus": "technical-review-passed"
+    },
+    {
+      "path": "prompts/coach-learner.md",
+      "author": "OpenAI Codex under maintainer direction",
+      "createdOn": "2026-08-26",
+      "targetLevels": ["B1", "B2", "C1", "C2"],
+      "skill": "learner coaching",
+      "reviewStatus": "technical-review-passed"
+    }
+  ],
+  "assurances": {
+    "thirdPartyTextCopied": false,
+    "oldExercisesParaphrased": false,
+    "productionDataUsed": false,
+    "personalDataIntentionallyIncluded": false,
+    "providerBrandingIncluded": false
+  }
+}

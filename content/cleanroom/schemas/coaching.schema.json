@@ -1,0 +1,20 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.exameny.local/cleanroom/coaching.schema.json",
+  "title": "Clean-room coaching cases",
+  "type": "array",
+  "minItems": 4,
+  "items": {
+    "type": "object",
+    "required": ["id", "level", "learnerMessage", "context", "expectedBehavior", "exampleResponse"],
+    "properties": {
+      "id": { "type": "string" },
+      "level": { "enum": ["B1", "B2", "C1", "C2"] },
+      "learnerMessage": { "type": "string" },
+      "context": { "type": "object" },
+      "expectedBehavior": { "type": "array", "minItems": 2, "items": { "type": "string" } },
+      "exampleResponse": { "type": "string" }
+    },
+    "additionalProperties": false
+  }
+}

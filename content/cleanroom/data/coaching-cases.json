@@ -1,0 +1,106 @@
+[
+  {
+    "id": "CR_COACH_B1_OPEN_CLOZE_01",
+    "level": "B1",
+    "learnerMessage": "I wrote ‘with’ in ‘the shelf was full ___ packets’. Why is it wrong?",
+    "context": {
+      "taskId": "CR_B1_OPEN_CLOZE_SEED_SHELF",
+      "questionNumber": 1,
+      "learnerAnswer": "with",
+      "acceptedAnswers": ["of"],
+      "answerStatus": "incorrect"
+    },
+    "expectedBehavior": [
+      "Name the fixed phrase without criticising the learner",
+      "Contrast ‘full of’ with a simple example using ‘with’",
+      "Invite the learner to complete a new sentence"
+    ],
+    "exampleResponse": "Use ‘of’ here because the fixed phrase is ‘full of’: ‘a box full of pencils’. We use ‘with’ in a different pattern, such as ‘fill the box with pencils’. Try this one: ‘The room was full ___ people.’"
+  },
+  {
+    "id": "CR_COACH_B2_MC_CLOZE_01",
+    "level": "B2",
+    "learnerMessage": "Why is ‘although’ not possible before ‘future workshops could focus on useful skills’?",
+    "context": {
+      "taskId": "CR_B2_MC_CLOZE_REPAIR_TABLE",
+      "questionNumber": 3,
+      "learnerAnswer": "although",
+      "acceptedAnswers": ["so"],
+      "answerStatus": "incorrect"
+    },
+    "expectedBehavior": [
+      "Explain the logical relationship between the clauses",
+      "Show the contrastive meaning that ‘although’ would require",
+      "Give one short transfer example"
+    ],
+    "exampleResponse": "The notes were collected in order to improve later workshops, so the second clause is a result or purpose. ‘Although’ would signal an unexpected contrast, but the two ideas support each other. Compare: ‘We recorded common faults, so we planned a wiring workshop.’"
+  },
+  {
+    "id": "CR_COACH_C1_WORD_FORMATION_01",
+    "level": "C1",
+    "learnerMessage": "I chose ‘safeness’. Is that a real word?",
+    "context": {
+      "taskId": "CR_C1_WORD_FORMATION_NIGHT_MAP",
+      "questionNumber": 1,
+      "learnerAnswer": "safeness",
+      "acceptedAnswers": ["safety"],
+      "answerStatus": "incorrect"
+    },
+    "expectedBehavior": [
+      "Acknowledge that the form can occur while explaining the conventional choice",
+      "Use the surrounding syntax to identify a noun",
+      "Distinguish ordinary usage from a rare alternative"
+    ],
+    "exampleResponse": "‘Safeness’ can be understood, but it is rare and usually sounds technical or contrastive. In ordinary discussion, the noun formed from ‘safe’ is ‘safety’: ‘The researchers were interested in safety.’ The preposition ‘in’ tells you a noun is needed; frequency and collocation then make ‘safety’ the natural choice."
+  },
+  {
+    "id": "CR_COACH_C2_TRANSFORMATION_01",
+    "level": "C2",
+    "learnerMessage": "Give me the answer. I don't understand the inversion after ‘Little’.",
+    "context": {
+      "taskId": "CR_C2_KEYWORD_TRANSFORMATION_SHARED_STUDIO",
+      "questionNumber": 4,
+      "learnerAnswer": "",
+      "acceptedAnswers": ["did the organisers expect the evening sessions to be"],
+      "answerStatus": "blank"
+    },
+    "expectedBehavior": [
+      "Offer a structure-level hint before the complete answer",
+      "Explain that fronted negative or limiting adverbials trigger inversion",
+      "Ask the learner to attempt the auxiliary and subject first"
+    ],
+    "exampleResponse": "Start with the inversion pattern: ‘Little + auxiliary + subject + main verb’. Because the original is in the past, which auxiliary do you need before ‘the organisers’? Write just those first four words, and I will check them."
+  },
+  {
+    "id": "CR_COACH_B2_WRITING_01",
+    "level": "B2",
+    "learnerMessage": "My teacher says my paragraph is too general. What should I change?",
+    "context": {
+      "taskId": "CR_WRITE_B2_SHARED_EQUIPMENT",
+      "learnerExcerpt": "Sharing things is good for everyone and helps the environment. It is a very useful idea.",
+      "focus": "development"
+    },
+    "expectedBehavior": [
+      "Identify the unsupported general claims",
+      "Ask for one specific mechanism and one example",
+      "Offer a sentence frame without rewriting the paragraph"
+    ],
+    "exampleResponse": "Both sentences state benefits, but neither shows how they happen. Pick one object that households rarely use and explain what changes when it is shared. You could build from: ‘If ten households borrow one ___ instead of buying ten, …’. What object would make your example convincing?"
+  },
+  {
+    "id": "CR_COACH_C1_WRITING_02",
+    "level": "C1",
+    "learnerMessage": "Is my recommendation evidence-based if I say the room will definitely reduce complaints?",
+    "context": {
+      "taskId": "CR_WRITE_C1_QUIET_STUDY_PROPOSAL",
+      "learnerExcerpt": "The bookable room will definitely reduce all noise complaints.",
+      "focus": "claim calibration"
+    },
+    "expectedBehavior": [
+      "Separate a prediction from observed evidence",
+      "Recommend calibrated language",
+      "Connect the claim to the proposed six-week test"
+    ],
+    "exampleResponse": "Not yet. The room is a proposed intervention, so its effect has not been observed. Replace certainty with a testable prediction, for example: ‘The bookable room is likely to reduce complaints linked to unavailable quiet seats.’ Then state which complaint count or survey response would support that prediction after six weeks."
+  }
+]

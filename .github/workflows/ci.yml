@@ -1,0 +1,116 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  web:
+    name: Web application
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Check out source
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - name: Use Node.js 22
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+
+      - name: Install locked dependencies
+        run: npm ci --ignore-scripts
+
+      - name: Validate original public content
+        run: npm run content:check
+
+      - name: Verify Luna evaluation harness offline
+        run: npm run eval:luna:verify
+
+      - name: Validate public environment contract
+        run: npm run validate:env
+
+      - name: Validate database baseline
+        run: npm run db:check
+
+      - name: Verify generated database types
+        run: npm run db:types:check
+
+      - name: Reject sensitive production logging
+        run: npm run privacy:logs
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Type-check
+        run: npm run typecheck
+
+      - name: Test
+        run: npm run test
+
+      - name: Build
+        run: npm run build
+
+      - name: Verify published package contents
+        run: npm run package:check
+
+      - name: Install Chromium for the local public-demo test
+        run: npx playwright install --with-deps chromium
+
+      - name: Verify the public demo makes no remote request
+        run: npm run test:e2e:demo
+
+      - name: Verify dependency licenses
+        run: npm run licenses:check
+
+      - name: Reject known production vulnerabilities
+        run: npm audit --omit=dev --audit-level=moderate
+
+      - name: Generate software bill of materials
+        run: npm run sbom
+
+      - name: Upload software bill of materials
+        uses: actions/upload-artifact@v4
+        with:
+          name: cyclonedx-sbom
+          path: evidence/sbom.cdx.json
+          if-no-files-found: error
+
+  edge-security:
+    name: Edge Functions
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Check out source
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - name: Use Deno 2.9.5
+        uses: denoland/setup-deno@v2
+        with:
+          deno-version: v2.9.5
+
+      - name: Check formatting
+        run: npm run edge:fmt:check
+
+      - name: Lint Edge Functions
+        run: npm run edge:lint
+
+      - name: Type-check Edge Functions
+        run: npm run edge:check
+
+      - name: Test Edge Functions
+        run: npm run edge:test

@@ -1,0 +1,35 @@
+name: Educational content proposal
+description: Propose original clean-room practice material or a pedagogical correction.
+title: "[Content]: "
+labels: [content, triage]
+body:
+  - type: input
+    id: objective
+    attributes:
+      label: Learning objective
+      placeholder: e.g. B2 register control in a workplace email
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed content or correction
+      description: Explain the new material and how it helps the learner.
+    validations:
+      required: true
+  - type: textarea
+    id: provenance
+    attributes:
+      label: Provenance
+      description: State how and when it was authored and list any compatible sources requiring attribution.
+    validations:
+      required: true
+  - type: checkboxes
+    id: cleanroom
+    attributes:
+      label: Clean-room declaration
+      options:
+        - label: I did not copy, paraphrase, trace, transcribe, transform, or prompt from protected examination-provider material.
+          required: true
+        - label: I have the right to submit and license this contribution under the repository's terms.
+          required: true

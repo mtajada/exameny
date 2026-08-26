@@ -1,0 +1,10 @@
+# The project currently has one maintainer. Add domain reviewers as the
+# contributor group grows.
+* @mtajada
+
+/content/cleanroom/ @mtajada
+/supabase/migrations/ @mtajada
+/supabase/functions/ @mtajada
+/evals/luna/ @mtajada
+/.github/workflows/ @mtajada
+/.github/CODEOWNERS @mtajada

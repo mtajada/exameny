@@ -1,0 +1,30 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.exameny.local/cleanroom/writing-task.schema.json",
+  "title": "Clean-room writing tasks",
+  "type": "array",
+  "items": {
+    "type": "object",
+    "required": ["id", "level", "genre", "audience", "purpose", "prompt", "constraints", "successCriteria"],
+    "properties": {
+      "id": { "type": "string", "pattern": "^CR_WRITE_(B1|B2|C1|C2)_[A-Z0-9_]+$" },
+      "level": { "enum": ["B1", "B2", "C1", "C2"] },
+      "genre": { "type": "string" },
+      "audience": { "type": "string" },
+      "purpose": { "type": "string" },
+      "prompt": { "type": "string", "minLength": 40 },
+      "constraints": {
+        "type": "object",
+        "required": ["minWords", "maxWords", "requiredPoints"],
+        "properties": {
+          "minWords": { "type": "integer", "minimum": 50 },
+          "maxWords": { "type": "integer", "minimum": 80 },
+          "requiredPoints": { "type": "array", "minItems": 2, "items": { "type": "string" } }
+        },
+        "additionalProperties": false
+      },
+      "successCriteria": { "type": "array", "minItems": 3, "items": { "type": "string" } }
+    },
+    "additionalProperties": false
+  }
+}

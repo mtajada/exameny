@@ -1,0 +1,16 @@
+{
+  "name": "@exameny/cleanroom-learning-pack",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Original, examiner-independent English learning fixtures and prompts for Exameny.",
+  "type": "module",
+  "scripts": {
+    "lint": "node scripts/lint.mjs",
+    "validate": "node scripts/validate.mjs",
+    "test": "node --test tests/*.test.mjs",
+    "check": "npm run lint && npm run validate && npm run test"
+  },
+  "engines": {
+    "node": ">=22"
+  }
+}

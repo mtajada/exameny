@@ -1,0 +1,66 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.exameny.local/cleanroom/evaluation-result.schema.json",
+  "title": "Writing evaluation result",
+  "oneOf": [
+    {
+      "type": "object",
+      "required": ["status", "taskCoverage", "dimensions", "strengths", "improvements", "priorityRevision", "uncertainties"],
+      "properties": {
+        "status": { "const": "evaluated" },
+        "taskCoverage": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["requiredPoint", "status", "evidence"],
+            "properties": {
+              "requiredPoint": { "type": "string" },
+              "status": { "enum": ["met", "partial", "missing"] },
+              "evidence": { "type": "string" }
+            },
+            "additionalProperties": false
+          }
+        },
+        "dimensions": {
+          "type": "array",
+          "minItems": 5,
+          "items": {
+            "type": "object",
+            "required": ["id", "score", "evidence", "comment"],
+            "properties": {
+              "id": { "type": "string" },
+              "score": { "type": "integer", "minimum": 0, "maximum": 4 },
+              "evidence": { "type": "array", "items": { "type": "string" } },
+              "comment": { "type": "string" }
+            },
+            "additionalProperties": false
+          }
+        },
+        "strengths": { "type": "array", "maxItems": 3, "items": { "type": "string" } },
+        "improvements": { "type": "array", "maxItems": 3, "items": { "type": "string" } },
+        "priorityRevision": {
+          "type": "object",
+          "required": ["focus", "reason", "nextStep"],
+          "properties": {
+            "focus": { "type": "string" },
+            "reason": { "type": "string" },
+            "nextStep": { "type": "string" }
+          },
+          "additionalProperties": false
+        },
+        "uncertainties": { "type": "array", "items": { "type": "string" } }
+      },
+      "additionalProperties": false
+    },
+    {
+      "type": "object",
+      "required": ["status", "reason", "message"],
+      "properties": {
+        "status": { "const": "cannotEvaluate" },
+        "reason": { "enum": ["missing-task", "missing-response", "invalid-rubric", "unsafe-input"] },
+        "message": { "type": "string" }
+      },
+      "additionalProperties": false
+    }
+  ]
+}

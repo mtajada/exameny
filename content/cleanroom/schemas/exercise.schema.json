@@ -1,0 +1,90 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.exameny.local/cleanroom/exercise.schema.json",
+  "title": "Clean-room exercise collection",
+  "type": "array",
+  "minItems": 8,
+  "items": {
+    "type": "object",
+    "required": ["id", "level", "archetype", "title", "mainTextWithPlaceholders", "questions", "learningObjectives"],
+    "properties": {
+      "id": { "type": "string", "pattern": "^CR_(B1|B2|C1|C2)_[A-Z0-9_]+$" },
+      "level": { "enum": ["B1", "B2", "C1", "C2"] },
+      "archetype": {
+        "enum": [
+          "mc-cloze",
+          "open-cloze",
+          "word-formation",
+          "keyword-transformation",
+          "reading-mcq",
+          "gapped-text",
+          "multiple-matching",
+          "cross-text"
+        ]
+      },
+      "title": { "type": "string", "minLength": 3 },
+      "mainTextWithPlaceholders": { "type": "string", "minLength": 20 },
+      "learningObjectives": { "type": "array", "minItems": 1, "items": { "type": "string" } },
+      "questions": {
+        "type": "array",
+        "minItems": 1,
+        "items": {
+          "type": "object",
+          "required": ["questionNumber", "placeholder"],
+          "properties": {
+            "questionNumber": { "type": "integer", "minimum": 1 },
+            "placeholder": { "type": "string", "pattern": "^\\{\\{[0-9]+\\}\\}$" },
+            "questionText": { "type": "string" },
+            "explanation": { "type": "string" },
+            "originalSentence": { "type": "string" },
+            "transformationSentence": { "type": "string" },
+            "correctAnswers": { "type": "array", "minItems": 1, "items": { "type": "string" } },
+            "options": {
+              "type": "array",
+              "minItems": 2,
+              "items": {
+                "type": "object",
+                "required": ["letter", "text", "isCorrect", "feedback"],
+                "properties": {
+                  "letter": { "type": "string", "pattern": "^[A-Z]$" },
+                  "text": { "type": "string" },
+                  "isCorrect": { "type": "boolean" },
+                  "feedback": { "type": "string" }
+                },
+                "additionalProperties": false
+              }
+            }
+          },
+          "additionalProperties": false
+        }
+      },
+      "options": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "required": ["letter", "text"],
+          "properties": {
+            "letter": { "type": "string", "pattern": "^[A-Z]$" },
+            "text": { "type": "string" },
+            "isDistractor": { "type": "boolean" }
+          },
+          "additionalProperties": false
+        }
+      },
+      "texts": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "required": ["letter", "title", "content"],
+          "properties": {
+            "letter": { "type": "string", "pattern": "^[A-Z]$" },
+            "title": { "type": "string" },
+            "content": { "type": "string" }
+          },
+          "additionalProperties": false
+        }
+      }
+    },
+    "additionalProperties": false
+  }
+}

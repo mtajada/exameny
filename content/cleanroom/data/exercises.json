@@ -1,0 +1,286 @@
+[
+  {
+    "id": "CR_B2_MC_CLOZE_REPAIR_TABLE",
+    "level": "B2",
+    "archetype": "mc-cloze",
+    "title": "A Saturday at the Repair Table",
+    "mainTextWithPlaceholders": "Our neighbourhood repair table began with three folding chairs and a box of borrowed tools. Visitors bring lamps, radios, and small household objects that have {{1}} working. The volunteers do not simply fix each item; they invite its owner to inspect the problem with them. This approach takes longer, but it gives people the confidence to attempt simple repairs {{2}} their own. Last month, the group saved forty-two objects from being thrown away. It also collected short notes about the most common faults, {{3}} future workshops could focus on useful skills. The organisers are careful not to promise that every object can be rescued. Even so, owners often leave satisfied because they understand {{4}} went wrong and what to check next time.",
+    "learningObjectives": [
+      "Select verbs and connectors from grammatical and collocational context",
+      "Use local cohesion to distinguish plausible distractors"
+    ],
+    "questions": [
+      {
+        "questionNumber": 1,
+        "placeholder": "{{1}}",
+        "options": [
+          { "letter": "A", "text": "stopped", "isCorrect": true, "feedback": "‘Stopped working’ is the natural verb pattern for a device that no longer functions." },
+          { "letter": "B", "text": "closed", "isCorrect": false, "feedback": "‘Closed’ does not combine with ‘working’ in this meaning." },
+          { "letter": "C", "text": "paused", "isCorrect": false, "feedback": "A device can pause, but ‘paused working’ is not the intended construction." },
+          { "letter": "D", "text": "ended", "isCorrect": false, "feedback": "‘Ended working’ is not idiomatic here." }
+        ]
+      },
+      {
+        "questionNumber": 2,
+        "placeholder": "{{2}}",
+        "options": [
+          { "letter": "A", "text": "by", "isCorrect": false, "feedback": "‘By their own’ is incomplete; it would require a different phrase." },
+          { "letter": "B", "text": "on", "isCorrect": true, "feedback": "‘On their own’ means independently." },
+          { "letter": "C", "text": "from", "isCorrect": false, "feedback": "‘From their own’ does not form the fixed expression." },
+          { "letter": "D", "text": "with", "isCorrect": false, "feedback": "‘With their own’ would need a following noun." }
+        ]
+      },
+      {
+        "questionNumber": 3,
+        "placeholder": "{{3}}",
+        "options": [
+          { "letter": "A", "text": "unless", "isCorrect": false, "feedback": "The sentence expresses a result or purpose, not an exception." },
+          { "letter": "B", "text": "whereas", "isCorrect": false, "feedback": "No contrast is being drawn between two facts." },
+          { "letter": "C", "text": "so", "isCorrect": true, "feedback": "‘So’ connects the collected evidence to its intended practical use." },
+          { "letter": "D", "text": "although", "isCorrect": false, "feedback": "The second clause does not concede or contradict the first." }
+        ]
+      },
+      {
+        "questionNumber": 4,
+        "placeholder": "{{4}}",
+        "options": [
+          { "letter": "A", "text": "that", "isCorrect": false, "feedback": "‘That’ cannot ask about the cause in this embedded clause." },
+          { "letter": "B", "text": "which", "isCorrect": false, "feedback": "There is no defined set of alternatives for ‘which’ to select from." },
+          { "letter": "C", "text": "how", "isCorrect": false, "feedback": "‘How went wrong’ is not grammatical." },
+          { "letter": "D", "text": "what", "isCorrect": true, "feedback": "‘What went wrong’ is the correct embedded question." }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "CR_B1_OPEN_CLOZE_SEED_SHELF",
+    "level": "B1",
+    "archetype": "open-cloze",
+    "title": "The Seed Shelf",
+    "mainTextWithPlaceholders": "A small shelf appeared beside the entrance to Brook Lane Library in March. It was full {{1}} packets of vegetable and flower seeds. Anyone could take a packet, provided that they promised to return some seeds after the plants had grown. At first, the librarians were not sure {{2}} the idea would work. Within two weeks, however, every packet had found a home. Local gardeners then began adding labels with simple advice, such as how much sunlight each plant needed. The shelf has become more {{3}} a place to exchange seeds: people now leave notes offering spare pots or help to new gardeners. There is no membership form, {{4}} participants are asked to take only what they can use.",
+    "learningObjectives": [
+      "Complete common fixed phrases with function words",
+      "Use clause meaning to choose a conjunction"
+    ],
+    "questions": [
+      { "questionNumber": 1, "placeholder": "{{1}}", "correctAnswers": ["of"], "explanation": "The fixed phrase is ‘full of’." },
+      { "questionNumber": 2, "placeholder": "{{2}}", "correctAnswers": ["whether", "if"], "explanation": "An indirect yes-or-no question can use ‘whether’ or ‘if’." },
+      { "questionNumber": 3, "placeholder": "{{3}}", "correctAnswers": ["than"], "explanation": "The expression ‘more than’ shows that the shelf now has an additional social role." },
+      { "questionNumber": 4, "placeholder": "{{4}}", "correctAnswers": ["but"], "explanation": "‘But’ contrasts the absence of a form with the presence of a request." }
+    ]
+  },
+  {
+    "id": "CR_C1_WORD_FORMATION_NIGHT_MAP",
+    "level": "C1",
+    "archetype": "word-formation",
+    "title": "Mapping a City After Dark",
+    "mainTextWithPlaceholders": "A university team asked residents to record how they moved through the city after dark. The researchers were interested not only in {{1}}, but also in whether public spaces felt welcoming. Participants used a simple map to mark bright routes, quiet corners, and places where signs were {{2}}. The project produced several {{3}} findings. For example, a well-lit path was not always the preferred route if it felt isolated. City planners have since added evening walks to their consultation process, giving residents a more {{4}} role in decisions about lighting and transport.",
+    "learningObjectives": [
+      "Form context-appropriate nouns and adjectives",
+      "Use suffixes and prefixes while preserving meaning"
+    ],
+    "questions": [
+      { "questionNumber": 1, "placeholder": "{{1}}", "questionText": "SAFE", "correctAnswers": ["safety"], "explanation": "A noun is needed after the preposition ‘in’." },
+      { "questionNumber": 2, "placeholder": "{{2}}", "questionText": "CLEAR", "correctAnswers": ["unclear"], "explanation": "The context describes signs that were difficult to understand, so a negative adjective is required." },
+      { "questionNumber": 3, "placeholder": "{{3}}", "questionText": "EXPECT", "correctAnswers": ["unexpected"], "explanation": "An adjective meaning ‘not anticipated’ modifies ‘findings’." },
+      { "questionNumber": 4, "placeholder": "{{4}}", "questionText": "ACT", "correctAnswers": ["active"], "explanation": "An adjective is needed before ‘role’." }
+    ]
+  },
+  {
+    "id": "CR_C2_KEYWORD_TRANSFORMATION_SHARED_STUDIO",
+    "level": "C2",
+    "archetype": "keyword-transformation",
+    "title": "A Shared Studio",
+    "mainTextWithPlaceholders": "Rewrite each sentence so that it keeps the original meaning. Use the supplied word without changing it. Each answer should contain three to ten words.",
+    "learningObjectives": [
+      "Recast meaning through advanced grammatical structures",
+      "Maintain register and emphasis while respecting a word constraint"
+    ],
+    "questions": [
+      {
+        "questionNumber": 1,
+        "placeholder": "{{1}}",
+        "questionText": "SOONER",
+        "originalSentence": "I would prefer the studio to publish the timetable today rather than wait until Friday.",
+        "transformationSentence": "I would {{1}} wait until Friday.",
+        "correctAnswers": ["sooner have the studio publish the timetable today than"],
+        "explanation": "‘Would sooner … than …’ expresses a strong preference between two actions."
+      },
+      {
+        "questionNumber": 2,
+        "placeholder": "{{2}}",
+        "questionText": "ACCOUNT",
+        "originalSentence": "The committee did not consider the extra ventilation costs when it set the fee.",
+        "transformationSentence": "The committee failed {{2}} when it set the fee.",
+        "correctAnswers": ["to take the extra ventilation costs into account"],
+        "explanation": "‘Take something into account’ means to include it in a decision."
+      },
+      {
+        "questionNumber": 3,
+        "placeholder": "{{3}}",
+        "questionText": "BUT",
+        "originalSentence": "The launch succeeded only because volunteers worked throughout the weekend.",
+        "transformationSentence": "{{3}}, the launch would not have succeeded.",
+        "correctAnswers": ["But for the volunteers working throughout the weekend", "But for the volunteers' work throughout the weekend"],
+        "explanation": "‘But for’ introduces the condition whose absence would have changed the past result."
+      },
+      {
+        "questionNumber": 4,
+        "placeholder": "{{4}}",
+        "questionText": "LITTLE",
+        "originalSentence": "The organisers did not expect the evening sessions to be so popular.",
+        "transformationSentence": "Little {{4}} so popular.",
+        "correctAnswers": ["did the organisers expect the evening sessions to be"],
+        "explanation": "Fronting ‘little’ for emphasis requires subject-auxiliary inversion."
+      }
+    ]
+  },
+  {
+    "id": "CR_B2_READING_MCQ_SOUND_WALK",
+    "level": "B2",
+    "archetype": "reading-mcq",
+    "title": "Listening to the Town",
+    "mainTextWithPlaceholders": "When Mara joined a guided sound walk, she expected the leader to explain local history. Instead, the group stood silently beside a fountain and wrote down every sound they noticed. At first, Mara recorded only obvious noises: buses, footsteps, and birds. After several minutes, she began to separate the splash of the fountain from the soft mechanical hum beneath it. The group then walked through a covered market, where their notes became surprisingly different. One participant focused on voices, while another noticed the rhythm of shutters being raised. The leader explained that a sound walk does not require special equipment or expert hearing. Its purpose is to make familiar places feel less automatic. Mara later repeated the activity on her usual route to work. She did not discover a hidden musical masterpiece, but she did notice which streets made her hurry and which ones helped her think. She now takes a quieter route twice a week, even though it adds five minutes to the journey.",
+    "learningObjectives": [
+      "Identify purpose, detail, and implied attitude in an original text",
+      "Distinguish a supported inference from an attractive but unsupported claim"
+    ],
+    "questions": [
+      {
+        "questionNumber": 1,
+        "placeholder": "{{1}}",
+        "questionText": "What surprised Mara at the beginning of the walk?",
+        "explanation": "She expected historical explanations but was asked to listen and record sounds.",
+        "options": [
+          { "letter": "A", "text": "The group was asked to remain quiet and observe.", "isCorrect": true, "feedback": "This directly contrasts with her expectation of a spoken history tour." },
+          { "letter": "B", "text": "The fountain was powered by a machine.", "isCorrect": false, "feedback": "She notices a hum later, but this is not the initial surprise." },
+          { "letter": "C", "text": "The market was closed to visitors.", "isCorrect": false, "feedback": "The market is active and its shutters are being raised." },
+          { "letter": "D", "text": "The leader provided recording equipment.", "isCorrect": false, "feedback": "The leader says no special equipment is required." }
+        ]
+      },
+      {
+        "questionNumber": 2,
+        "placeholder": "{{2}}",
+        "questionText": "Why are the different market notes mentioned?",
+        "explanation": "They demonstrate that attention shapes what each person notices in the same place.",
+        "options": [
+          { "letter": "A", "text": "To show that the market was unusually noisy", "isCorrect": false, "feedback": "The passage stresses difference in attention, not total volume." },
+          { "letter": "B", "text": "To show that people notice different layers of one environment", "isCorrect": true, "feedback": "Each participant selects a different sound from the shared setting." },
+          { "letter": "C", "text": "To prove that trained listeners hear more detail", "isCorrect": false, "feedback": "The leader explicitly says expert hearing is unnecessary." },
+          { "letter": "D", "text": "To compare indoor and outdoor acoustics", "isCorrect": false, "feedback": "No systematic acoustic comparison is made." }
+        ]
+      },
+      {
+        "questionNumber": 3,
+        "placeholder": "{{3}}",
+        "questionText": "What does the leader see as the main value of a sound walk?",
+        "explanation": "It interrupts habitual perception and renews attention to ordinary places.",
+        "options": [
+          { "letter": "A", "text": "It teaches participants to create music.", "isCorrect": false, "feedback": "The activity is about attention, not composition." },
+          { "letter": "B", "text": "It reveals forgotten historical facts.", "isCorrect": false, "feedback": "Historical instruction was Mara's expectation, not the activity's purpose." },
+          { "letter": "C", "text": "It changes how participants experience familiar surroundings.", "isCorrect": true, "feedback": "This restates the idea of making familiar places feel less automatic." },
+          { "letter": "D", "text": "It identifies streets with dangerous traffic.", "isCorrect": false, "feedback": "Safety mapping is not the purpose described." }
+        ]
+      },
+      {
+        "questionNumber": 4,
+        "placeholder": "{{4}}",
+        "questionText": "What can be inferred about Mara's later route choice?",
+        "explanation": "She accepts a small time cost because the quieter route improves her experience.",
+        "options": [
+          { "letter": "A", "text": "She values a calmer journey enough to spend slightly longer travelling.", "isCorrect": true, "feedback": "The quieter route adds five minutes, yet she chooses it regularly." },
+          { "letter": "B", "text": "She has permanently stopped using busy streets.", "isCorrect": false, "feedback": "She takes the quieter route only twice a week." },
+          { "letter": "C", "text": "She is preparing to lead sound walks herself.", "isCorrect": false, "feedback": "The text does not suggest this plan." },
+          { "letter": "D", "text": "She found that quiet streets always improve concentration.", "isCorrect": false, "feedback": "This overgeneralises a personal observation." }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "CR_C1_GAPPED_TEXT_TOOL_LIBRARY",
+    "level": "C1",
+    "archetype": "gapped-text",
+    "title": "The Tool Library That Learnt to Say No",
+    "mainTextWithPlaceholders": "The River Quarter Tool Library opened with a simple promise: residents could borrow equipment that was expensive to buy but rarely used. Membership grew quickly, and the shelves filled with drills, ladders, sewing machines, and gardening tools. {{1}} The success created an unexpected problem, however. Volunteers were spending so much time checking equipment that they could no longer help members learn how to use it.\n\nThe committee first considered limiting membership. {{2}} Instead, it studied which loans created the most work. The data showed that a small number of complicated machines accounted for most late returns and safety checks. The library stopped accepting those machines and published a clear explanation.\n\nSome members complained that the decision made the collection less impressive. {{3}} Within a month, waiting times fell and volunteers restarted their Saturday workshops. Attendance at those sessions soon exceeded the number of people who had borrowed the removed machines.\n\nThe experience changed how the committee measured success. It still records membership and loans, but it now tracks whether people gain confidence with a skill. {{4}} By narrowing the collection, the library became better at fulfilling its real purpose: helping neighbours make and repair things together.",
+    "learningObjectives": [
+      "Trace argument structure and reference across paragraphs",
+      "Select missing sentences by function, not keyword overlap"
+    ],
+    "questions": [
+      { "questionNumber": 1, "placeholder": "{{1}}", "correctAnswers": ["C"] },
+      { "questionNumber": 2, "placeholder": "{{2}}", "correctAnswers": ["A"] },
+      { "questionNumber": 3, "placeholder": "{{3}}", "correctAnswers": ["E"] },
+      { "questionNumber": 4, "placeholder": "{{4}}", "correctAnswers": ["B"] }
+    ],
+    "options": [
+      { "letter": "A", "text": "That would have reduced demand, but it would not have addressed what was consuming the volunteers' time." },
+      { "letter": "B", "text": "A short conversation after each workshop provides richer evidence for that question than a loan total ever could." },
+      { "letter": "C", "text": "At first, the team regarded every new loan as proof that the model was working." },
+      { "letter": "D", "text": "Other organisations responded by offering to store the entire collection in distant warehouses.", "isDistractor": true },
+      { "letter": "E", "text": "Yet the change also made the service more reliable for the items that remained." }
+    ]
+  },
+  {
+    "id": "CR_B1_MULTIPLE_MATCHING_SKILL_SWAPS",
+    "level": "B1",
+    "archetype": "multiple-matching",
+    "title": "Four Weekend Skill Swaps",
+    "mainTextWithPlaceholders": "Read four notices for free community sessions. Match each person's need to the most suitable session.",
+    "learningObjectives": [
+      "Scan short notices for practical detail",
+      "Match needs to explicit conditions and outcomes"
+    ],
+    "questions": [
+      { "questionNumber": 1, "placeholder": "{{1}}", "questionText": "Nora wants to repair a piece of clothing and can only attend after lunch.", "correctAnswers": ["B"], "explanation": "Session B runs in the afternoon and asks participants to bring damaged clothing." },
+      { "questionNumber": 2, "placeholder": "{{2}}", "questionText": "Eli wants an activity he can later repeat with young children.", "correctAnswers": ["D"], "explanation": "Session D teaches simple paper engineering and explicitly welcomes family groups." },
+      { "questionNumber": 3, "placeholder": "{{3}}", "questionText": "Sam has no equipment and wants to learn to make a useful household object.", "correctAnswers": ["A"], "explanation": "Session A supplies all tools and produces a small wooden shelf." },
+      { "questionNumber": 4, "placeholder": "{{4}}", "questionText": "Imani enjoys cooking and wants to reduce food waste.", "correctAnswers": ["C"], "explanation": "Session C focuses on turning vegetable leftovers into stock and sauces." },
+      { "questionNumber": 5, "placeholder": "{{5}}", "questionText": "Leo is free in the morning and prefers working with natural materials.", "correctAnswers": ["A"], "explanation": "Session A is a morning woodworking activity." }
+    ],
+    "options": [
+      { "letter": "A", "text": "Shelf in a Morning: Build a small wall shelf from reclaimed timber, 09:30–12:00. All tools and safety equipment are supplied. Beginners are welcome." },
+      { "letter": "B", "text": "Visible Mending: Bring a torn shirt, bag, or pair of jeans and learn colourful hand-stitching, 14:00–16:00. Needles and thread are provided." },
+      { "letter": "C", "text": "Kitchen Scraps, Better Meals: Use clean vegetable trimmings to prepare stock, flavoured oil, and a quick sauce, 11:00–13:00. Bring two clean jars." },
+      { "letter": "D", "text": "Paper Machines for Families: Make moving cards and simple paper mechanisms, 10:30–12:00. Adults and children aged seven or over work together." }
+    ]
+  },
+  {
+    "id": "CR_C2_CROSS_TEXT_ROOFTOP_GARDENS",
+    "level": "C2",
+    "archetype": "cross-text",
+    "title": "Four Views on Public Rooftop Gardens",
+    "mainTextWithPlaceholders": "Four writers consider whether public buildings should host rooftop gardens. Match each question to the writer whose position it describes most accurately.",
+    "learningObjectives": [
+      "Compare nuanced positions across short argumentative texts",
+      "Identify qualified agreement, reservation, and underlying assumptions"
+    ],
+    "questions": [
+      { "questionNumber": 1, "placeholder": "{{1}}", "questionText": "Who argues that symbolic value can justify a project even when direct output is modest?", "correctAnswers": ["D"] },
+      { "questionNumber": 2, "placeholder": "{{2}}", "questionText": "Who is most concerned that enthusiasm may conceal continuing operational costs?", "correctAnswers": ["B"] },
+      { "questionNumber": 3, "placeholder": "{{3}}", "questionText": "Who sees the proposal primarily as a way to build practical knowledge?", "correctAnswers": ["A"] },
+      { "questionNumber": 4, "placeholder": "{{4}}", "questionText": "Who thinks the physical site should be selected only after consulting likely participants?", "correctAnswers": ["C"] }
+    ],
+    "texts": [
+      {
+        "letter": "A",
+        "title": "A Classroom Above the Street",
+        "content": "The harvest will never feed an entire district, and that should not be the test. A rooftop plot lets residents compare soil mixtures, observe insects, and understand why watering systems fail. If the project is designed around workshops rather than impressive photographs, its educational return could be substantial. The budget should therefore include trained facilitators, not just beds and plants."
+      },
+      {
+        "letter": "B",
+        "title": "Budget for Year Five",
+        "content": "Opening-day volunteers are easy to find; people willing to inspect drainage in winter are not. Proposals routinely celebrate donated timber and free seedlings while treating maintenance as if it disappears after launch. Any public body considering a garden should publish a five-year staffing and repair budget first. Without that, a neglected rooftop may become an expensive lesson in wishful thinking."
+      },
+      {
+        "letter": "C",
+        "title": "Start with the People",
+        "content": "Planners often begin by identifying the flattest roof and then search for users. The order should be reversed. A site near a senior centre might need shade and seating, while one above a youth workshop could support experiments and noisy group activity. Ask participants what they would sustain, then find a building that suits the resulting programme. Architecture is a constraint, not the mission."
+      },
+      {
+        "letter": "D",
+        "title": "A Visible Commitment",
+        "content": "Critics correctly note that rooftop crops are costly compared with produce from ordinary farms. Yet public projects also communicate priorities. A carefully maintained garden above a library can make heat, rainwater, and urban biodiversity visible to thousands of visitors. Its output should still be measured honestly, but a modest harvest does not make the project empty if it changes what a community is willing to discuss."
+      }
+    ]
+  }
+]

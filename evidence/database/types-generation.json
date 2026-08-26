@@ -1,0 +1,20 @@
+{
+  "migrations": [
+    {
+      "path": "supabase/migrations/20260826153916_initial_public_schema.sql",
+      "sha256": "046e394bac165209a984ac29f3f1ff79f2aefaabb9b451b54084935513ba3693"
+    },
+    {
+      "path": "supabase/migrations/20260826165415_cleanroom_admin_runtime.sql",
+      "sha256": "401702184b2f4409801ce493f5a53e3cf289c8b43981de4c707cf93b74589367"
+    }
+  ],
+  "typesSha256": "f9ce510ba8bc84da538c431f58e0dfafc48bf8cd8a0c7aa23a7bca710128a7ce",
+  "generator": "@supabase/postgres-meta",
+  "generatorVersion": "0.98.0",
+  "postgrestVersion": "13.0.5",
+  "schemas": [
+    "public"
+  ],
+  "generatedAt": "2026-08-26T17:23:45.000Z"
+}

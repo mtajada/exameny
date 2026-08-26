@@ -1,0 +1,101 @@
+mode: IMPLEMENT_TRACK
+max_iterations: 3
+plan_source: PLAN.md
+plan_points:
+  - id: POINT-001
+    text: "Twenty-four clean-room cases cover four workflows and B1-C1"
+    mapped_plan_item_ids: [PLAN-001]
+  - id: POINT-002
+    text: "Adversarial cases have a mandatory 100 percent safety gate"
+    mapped_plan_item_ids: [PLAN-001, PLAN-004]
+  - id: POINT-003
+    text: "Requests use GPT-5.6 Luna, Responses, store false, and strict schemas"
+    mapped_plan_item_ids: [PLAN-002]
+  - id: POINT-004
+    text: "Live runs are opt-in, budget-bounded, low-concurrency, and finite"
+    mapped_plan_item_ids: [PLAN-003]
+  - id: POINT-005
+    text: "Public reports contain objective quality, cost, and latency evidence without secrets or response IDs"
+    mapped_plan_item_ids: [PLAN-004]
+  - id: POINT-006
+    text: "Offline tests cover safety-critical runner behavior"
+    mapped_plan_item_ids: [PLAN-005]
+plan_items:
+  - id: PLAN-001
+    description: "Create and validate the clean-room fixture set"
+    acceptance_criteria:
+      - "Exactly 24 unique cases"
+      - "Six cases per workflow"
+      - "B1, B2, and C1 represented"
+      - "At least eight adversarial cases"
+    requires_visual: false
+    requires_text_eval: false
+    status: PENDING
+  - id: PLAN-002
+    description: "Build strict Responses API requests"
+    acceptance_criteria:
+      - "Model is gpt-5.6-luna"
+      - "store is false"
+      - "Every workflow uses a strict JSON Schema"
+    requires_visual: false
+    requires_text_eval: false
+    status: PENDING
+  - id: PLAN-003
+    description: "Enforce live-run safety and cost limits"
+    acceptance_criteria:
+      - "Dry run performs no network request"
+      - "Live mode requires explicit confirmation and env path"
+      - "Budget never exceeds USD 0.75"
+      - "Concurrency and attempts are capped at two"
+    requires_visual: false
+    requires_text_eval: false
+    status: PENDING
+  - id: PLAN-004
+    description: "Grade and serialize public-safe evidence"
+    acceptance_criteria:
+      - "Deterministic expectations produce per-case results"
+      - "Safety, quality, latency, and cost gates are explicit"
+      - "Provider response IDs and credentials are absent"
+    requires_visual: false
+    requires_text_eval: false
+    status: PENDING
+  - id: PLAN-005
+    description: "Verify the standalone package offline"
+    acceptance_criteria:
+      - "Syntax checks pass"
+      - "Unit and integration tests pass without network"
+      - "Dry-run fixture validation passes"
+    requires_visual: false
+    requires_text_eval: false
+    status: PENDING
+checks:
+  build:
+    required: true
+    command: "node run.mjs --mode dry-run"
+  typecheck:
+    required: false
+  lint:
+    required: true
+    command: "node scripts/lint.mjs"
+  unit:
+    required: true
+    command: "node --test tests/*.test.mjs"
+  integration:
+    required: true
+    command: "node --test tests/*.test.mjs && node run.mjs --mode dry-run"
+  e2e:
+    required: false
+  coverage:
+    required: false
+  security:
+    required: true
+    command: "node --test --test-name-pattern='secret|response ID|budget|network|attempt' tests/*.test.mjs"
+  diff:
+    required: false
+visual_checks: []
+text_checks: []
+cleanup:
+  enabled: true
+  output_dir: output/implementation-assurance
+  report_json: output/implementation-assurance/report.json
+  archive_dir: evidence/implementation-assurance

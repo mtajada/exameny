@@ -1,0 +1,43 @@
+# Dependencies and builds
+node_modules/
+dist/
+dist-ssr/
+coverage/
+evidence/sbom.cdx.json
+
+# Logs and test artifacts
+*.log
+logs/
+test-results/
+playwright-report/
+blob-report/
+tmp/
+.playwright-cli/
+output/playwright/exameny-demo-roles.png
+
+# Local environment and provider state
+.env
+.env.*
+!.env.example
+*.local
+.vercel/
+supabase/.temp/
+supabase/.branches/
+
+# Editors and operating systems
+.DS_Store
+.vscode/
+.idea/
+*.sw?
+
+# Local agent and automation state
+.agents/
+.claude/
+.codex/
+.mcp.json
+**/output/implementation-assurance/
+
+# Tool caches
+.playwright-mcp/
+vite.config.ts.timestamp-*
+*.backup

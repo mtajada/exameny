@@ -1,0 +1,18 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.exameny.local/cleanroom/evaluation.schema.json",
+  "title": "Clean-room writing evaluation cases",
+  "type": "object",
+  "required": ["rubric", "cases"],
+  "properties": {
+    "rubric": {
+      "type": "object",
+      "required": ["scale", "dimensions"],
+      "properties": {
+        "scale": { "type": "object" },
+        "dimensions": { "type": "array", "minItems": 5 }
+      }
+    },
+    "cases": { "type": "array", "minItems": 4 }
+  }
+}

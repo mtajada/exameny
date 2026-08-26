@@ -1,0 +1,17 @@
+{
+  "importMap": "./supabase/import_map.json",
+  "exclude": [
+    "dist",
+    "node_modules",
+    "src",
+    "scripts",
+    "test-results",
+    "tests",
+    "playwright.config.ts",
+    "vite.config.ts",
+    "tailwind.config.ts"
+  ],
+  "lint": {
+    "include": ["supabase/functions"]
+  }
+}

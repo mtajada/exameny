@@ -1,0 +1,99 @@
+[
+  {
+    "id": "CR_WRITE_B1_COMMUNITY_CLASS",
+    "level": "B1",
+    "genre": "friendly email",
+    "audience": "a classmate",
+    "purpose": "explain a change and invite a response",
+    "prompt": "Your free photography class has moved from the library to the community centre. Write to a classmate who missed the announcement. Explain where and when the next class will take place, say what participants should bring, and suggest travelling there together.",
+    "constraints": {
+      "minWords": 90,
+      "maxWords": 130,
+      "requiredPoints": [
+        "Give the new place and time",
+        "Say what to bring",
+        "Suggest a shared travel plan"
+      ]
+    },
+    "successCriteria": [
+      "The reader can act on every practical detail",
+      "The tone is friendly and direct",
+      "Events and plans are linked with clear time expressions",
+      "The message has an opening and a natural closing"
+    ]
+  },
+  {
+    "id": "CR_WRITE_B2_SHARED_EQUIPMENT",
+    "level": "B2",
+    "genre": "opinion essay",
+    "audience": "interested local readers",
+    "purpose": "evaluate a proposal and defend a position",
+    "prompt": "A local council is considering an equipment library where residents could borrow tools, sports equipment, and kitchen machines. Discuss two likely benefits and one practical difficulty. Decide whether the council should fund a one-year trial and support your view with reasons or examples.",
+    "constraints": {
+      "minWords": 170,
+      "maxWords": 230,
+      "requiredPoints": [
+        "Explain two distinct benefits",
+        "Address one practical difficulty",
+        "Give a justified decision about the trial"
+      ]
+    },
+    "successCriteria": [
+      "The position remains clear throughout",
+      "Paragraphs each develop one main idea",
+      "Examples are relevant rather than decorative",
+      "Connectors show contrast, consequence, and qualification"
+    ]
+  },
+  {
+    "id": "CR_WRITE_C1_QUIET_STUDY_PROPOSAL",
+    "level": "C1",
+    "genre": "formal proposal",
+    "audience": "library management team",
+    "purpose": "recommend evidence-based service improvements",
+    "prompt": "Students report that the central library does not offer enough reliable quiet study space during busy periods. Write a proposal that identifies the main causes, recommends two feasible changes, and explains how the library could test whether those changes work over six weeks.",
+    "constraints": {
+      "minWords": 240,
+      "maxWords": 320,
+      "requiredPoints": [
+        "Identify plausible causes without presenting guesses as facts",
+        "Recommend two feasible changes",
+        "Define a six-week test and useful evidence",
+        "Prioritise the recommendations"
+      ]
+    },
+    "successCriteria": [
+      "Headings make the proposal easy to scan",
+      "Recommendations follow logically from the stated causes",
+      "Claims are appropriately qualified",
+      "The evaluation method includes both use data and user feedback",
+      "The register is concise, constructive, and formal"
+    ]
+  },
+  {
+    "id": "CR_WRITE_C2_PUBLIC_DIALOGUE_REVIEW",
+    "level": "C2",
+    "genre": "critical comparative review",
+    "audience": "organisers of a civic learning programme",
+    "purpose": "compare two fictional formats and make a conditional recommendation",
+    "prompt": "A civic learning programme tested two public-dialogue formats. In ‘Open Table’, twelve residents discussed one question for ninety minutes with a facilitator. In ‘Question Trail’, visitors moved through five short stations, leaving written responses before a final twenty-minute conversation. Write a critical review of the two formats. Compare the depth and inclusiveness each might support, identify what evidence is still missing, and recommend when each format should be used.",
+    "constraints": {
+      "minWords": 320,
+      "maxWords": 420,
+      "requiredPoints": [
+        "Compare depth of discussion",
+        "Compare likely accessibility and participation",
+        "Separate known design facts from predictions",
+        "Identify missing evidence",
+        "Make a conditional recommendation"
+      ]
+    },
+    "successCriteria": [
+      "The review synthesises criteria instead of describing formats one after another",
+      "Evaluation uses precise and appropriately cautious language",
+      "Concessions and limitations sharpen the recommendation",
+      "The conclusion gives organisers a usable decision rule",
+      "Complex sentences remain controlled and readable"
+    ]
+  }
+]
