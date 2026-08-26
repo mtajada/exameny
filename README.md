@@ -53,9 +53,9 @@ The browser test fails if the demo makes a request outside localhost.
 - Original clean-room exercises, rubrics, coaching cases, and safety fixtures.
 - CI, CodeQL, Dependabot, Secretlint, Gitleaks, license review, and SBOM output.
 
-This release candidate is a sanitized export of the full public application,
-prepared for a new public history. It is not a copy of the private repository or
-the small auxiliary evaluation toolkit. The
+This release candidate is a sanitized export of the full public application.
+Its clean history imports no private commits, and it is not the small auxiliary
+evaluation toolkit. The
 [publication provenance](docs/publication-provenance.md) explains why.
 
 ## GPT-5.6 Luna evidence

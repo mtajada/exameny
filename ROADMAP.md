@@ -20,7 +20,7 @@ Prepared in the local release candidate:
 Required before the first tag:
 
 - [x] Confirm maintainer rights and record the collaborator-branch exclusion.
-- [ ] Pass install, lint, typecheck, tests, build, Edge Function checks, secret scans, and smoke tests from a clean clone.
+- [x] Pass install, lint, typecheck, tests, build, Edge Function checks, secret scans, and smoke tests from a clean clone.
 - [ ] Pass the full Supabase integration workflow in the public repository.
 - [ ] Verify the repository, documentation, demo, security reporting, and CI from an unauthenticated view.
 - [ ] Obtain fresh approval for the exact repository, commit, tag, release notes, and publication actions.

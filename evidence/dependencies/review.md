@@ -37,10 +37,9 @@ passed:
   the Chromium demo E2E test;
 - a Gitleaks `8.30.1` scan with zero leaks.
 
-All 616 candidate file hashes still matched the source manifest after the gate.
-This is strong clean-checkout evidence without claiming that a Git clone exists;
-the actual clean-clone and history scans remain release gates after the new
-history is created.
+All 616 candidate file hashes matched the pre-history manifest after that gate.
+The later Git clone and history scans also passed; see
+`evidence/publication/VALIDATION.md`.
 
 - `package-lock.json` SHA-256:
   `38dfe559245c7e71164ee888300a04251305f6d108b04debc9552760f1688d3d`.

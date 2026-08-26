@@ -1,7 +1,7 @@
 # Publication provenance
 
 The first public Exameny release candidate is prepared as a clean export from a
-privately maintained application. Publication will start a new Git history
+privately maintained application. Publication starts with a new Git history
 instead of exposing the private repository's branches or commits.
 
 That choice is deliberate. The private history included deployment identifiers,
