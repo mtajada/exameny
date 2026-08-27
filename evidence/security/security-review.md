@@ -1,12 +1,12 @@
 # Security and privacy review
 
-Date: 2026-08-26
+Date: 2026-08-27
 Scope: the sanitized public snapshot, including React/Vite, Supabase migrations,
 Edge Functions, deployment configuration, CI, fixtures, and dependency policy.
 
 ## Executive result
 
-No known Critical or High finding remains open in the reviewed snapshot. Four
+No known Critical or High finding remains open in the reviewed snapshot. Six
 issues found during the review were corrected before publication. The remaining
 items below are explicit operational or architectural limits, not claims that a
 deployed instance has already been penetration-tested.
@@ -17,7 +17,7 @@ deployed instance has already been penetration-tested.
 
 - Severity before fix: High in browser logs and Medium in operator-only Edge
   logs.
-- Scope: a final AST audit covered 365 production TypeScript and TSX files. It
+- Scope: a final AST audit covered 367 production TypeScript and TSX files. It
   found browser and Edge logging of task prompts, drafts, rows, emails,
   membership and submission identifiers, raw errors, and unbounded helper
   arguments. The initial pass changed 145 calls in 48 files. A stricter second
@@ -34,7 +34,7 @@ deployed instance has already been penetration-tested.
   `scripts/check-log-privacy.mjs` now rejects sensitive identifiers, raw
   payloads, error objects, spread arguments, unknown dynamic values, and
   dynamic helper event labels. Its seven regression tests and the full
-  365-file scan pass through
+  367-file scan pass through
   `npm run privacy:logs` in CI.
 
 ### SR-02 — personal data in optional analytics events
@@ -66,6 +66,25 @@ deployed instance has already been penetration-tested.
   `src/utils/reading-format.ts`, only project-generated structural tags are
   added, and injection behaviour has a regression test.
 
+### SR-05 — local fixture and failure-artifact boundary
+
+- Severity before fix: High if a hosted Edge runtime could enable deterministic
+  evaluation fixtures; Medium for over-broad CI failure artifacts.
+- Resolution: fixture mode now requires a recognized loopback or Supabase CLI
+  internal URL, `APP_ENV=development`, and the explicit fixture flag. Hosted
+  Supabase URLs and lookalike hosts are rejected by regression tests. CI turns
+  traces and videos off and retains only error context, screenshots, and the
+  local function log on failure.
+
+### SR-06 — evaluation payload consistency
+
+- Severity before fix: High because a service request could persist internally
+  contradictory legacy rows, V2 items, metrics, or summaries.
+- Resolution: the service-only RPC now derives and validates resolution counts,
+  category and tag IDs, summaries, anchored legacy mappings, and JavaScript
+  UTF-16 offsets in one transaction. Contradictory payloads roll back without
+  replacing the last valid analysis.
+
 ## Verified controls
 
 - browser-exposed variables are restricted to `VITE_SUPABASE_URL`, a Supabase
@@ -93,14 +112,11 @@ deployed instance has already been penetration-tested.
 
 ## Local secret-scan evidence
 
-- Secretlint passed over the final candidate tree.
-- Gitleaks `8.30.1` scanned approximately 7.80 MB with the repository's default-
-  extending configuration and reported zero leaks. The temporary macOS arm64
-  binary matched the current digest published by the
-  [official GitHub release](https://github.com/gitleaks/gitleaks/releases/tag/v8.30.1):
-  `b40ab0ae55c505963e365f271a8d3846efbc170aa17f2607f13df610a9aeb6a5`.
-- This is tree evidence. The complete public Git history must be scanned after
-  the new local history exists and again in public CI.
+- Secretlint passed over the candidate tree.
+- Gitleaks `8.30.1` scanned all 11 local public-history commits (about 4.88 MB)
+  and the clean candidate directory (about 6.16 MB) with the repository's
+  default-extending configuration; both reported zero leaks.
+- Public CI must repeat the history scan after push.
 
 ## Residual risks and required operator actions
 
@@ -117,11 +133,11 @@ deployed instance has already been penetration-tested.
    access, deletion, and backup rules under its own data-protection obligations.
 4. Repository header configuration must be verified against the live response
    after deployment. Configuration evidence is not runtime evidence.
-5. Full Auth/PostgREST/Edge isolation still requires the prepared local-stack CI
-   workflow to pass before release. No existing hosted project was used as a
-   substitute.
-6. Gitleaks must pass over the complete new public history after it is created;
-   the current scan covers the candidate tree only.
+5. The disposable local Auth/PostgREST/Edge stack passed all seven browser
+   flows. Hosted CI must reproduce that result before release; no existing
+   hosted project was used as a substitute.
+6. Gitleaks passed locally over the complete candidate history and tree. The
+   public secret-scan workflow must reproduce it after push.
 
 ## Review boundary
 

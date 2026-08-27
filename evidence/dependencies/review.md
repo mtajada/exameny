@@ -1,50 +1,53 @@
 # Dependency and package review
 
-Date: 2026-08-26
+Date: 2026-08-27
+Code candidate: `294db1f6035f8e6a249087cae1c2b00a95718dff`
 
 ## Results
 
-- `npm ci --ignore-scripts` is the required CI and clean-clone install path.
-- `npm audit --audit-level=moderate`: zero known vulnerabilities.
-- `npm audit --omit=dev --audit-level=moderate`: zero known production
+- `npm ci --ignore-scripts` installed 1,024 locked packages in a fresh clone and
+  reported zero known vulnerabilities.
+- `npm audit --audit-level=moderate` and
+  `npm audit --omit=dev --audit-level=moderate` both reported zero
   vulnerabilities.
-- `npm run licenses:check`: every production dependency matched the explicit
-  allowlist in `package.json`.
-- `npm run package:check`: 613 publishable files. The dry run contained the
-  required source, migrations, docs, and configuration, and no local
-  environment, Git, build, test-result, Vercel-state, or agent-state path. The
-  gate also rejects private
-  absolute home paths, temporary implementation-assurance output, Playwright
-  control state, and accidental duplicate filenames with a ` 2` suffix.
-- `npm run sbom`: generated a CycloneDX SBOM successfully. CI regenerates and
-  uploads it as an artifact; the generated file is not committed.
+- `npm run licenses:check` matched every production dependency against the
+  explicit allowlist in `package.json`.
+- `npm run package:check` passed with 625 publishable files, 1,404,314 packed
+  bytes, and 4,749,852 unpacked bytes. The package excludes local environment,
+  Git, build, test-result, Vercel-state, and agent-state paths.
+- `npm run sbom` generated a CycloneDX SBOM successfully. CI regenerates it as
+  a workflow artifact; the generated file is not committed.
+
+## Clean-clone verification
+
+The fresh clone of the code candidate passed:
+
+- lint, TypeScript, 50 Vitest files with 215 tests, and the production build;
+- 22 clean-room content files, eight activity archetypes, and six content
+  tests;
+- four database migrations applied twice, the synthetic seed applied twice,
+  RLS/RPC checks, and generated-type provenance;
+- the 24-case Luna dry run and its 15 harness tests;
+- seven log-privacy regressions across 367 production files;
+- Deno format across 131 files, lint across 129 files, type checks, and 331
+  Edge tests;
+- Secretlint, the production-license allowlist, both npm audits, the package
+  boundary check, and the Chromium demo;
+- a clean local Supabase rebuild, database lint, and all seven authenticated
+  browser flows using one shared-stack worker;
+- Gitleaks 8.30.1 over all 11 commits and over the clean candidate tree.
 
 ## Reproducibility
 
-An isolated-copy gate was also run from only the 616 candidate repository
-files, before any Git history existed. The target initially contained no
-`node_modules`, `dist`, or `.git` directory. `npm ci --ignore-scripts` installed
-1,024 packages and reported zero vulnerabilities. The isolated copy then
-passed:
-
-- lint, typecheck, 204 web tests, and the production build;
-- clean-room content, database migration/seed/RLS/RPC checks, and generated
-  database types;
-- the 24-case Luna dry run, seven log-privacy regressions, and environment
-  validation;
-- Deno format, lint, check, and 329 Edge tests;
-- Secretlint, production-license review, package review, production audit, and
-  the Chromium demo E2E test;
-- a Gitleaks `8.30.1` scan with zero leaks.
-
-All 616 candidate file hashes matched the pre-history manifest after that gate.
-The later Git clone and history scans also passed; see
-`evidence/publication/VALIDATION.md`.
-
 - `package-lock.json` SHA-256:
   `38dfe559245c7e71164ee888300a04251305f6d108b04debc9552760f1688d3d`.
-- local SBOM SHA-256 for this review:
-  `2b4f10d65d3223b5ac9ff4af1a743549efea4f0000f25fb03002dcfd653212e7`.
+- local CycloneDX SBOM SHA-256 for this review:
+  `c94318cb9c0c8050ad3d5d535bf08ea9c54863ff8d847a3496345a6ed894ca17`.
+
+The production build retains Vite's non-blocking large-chunk warning. The
+locked install also reports deprecation notices for two transitive or tooling
+packages. Neither produced an audit finding, but both remain maintenance items
+for routine dependency updates.
 
 These results are a dated registry snapshot, not a promise that future
 advisories will remain empty. Dependabot, CodeQL, npm audit, the lockfile, and
