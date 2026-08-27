@@ -52,6 +52,11 @@ const toDateString = (value: Date | string | null | undefined) => {
   return value.toISOString().slice(0, 10);
 };
 
+const toCodeLabel = (label: string) => {
+  const normalized = label.toUpperCase().replace(/[^A-Z0-9_]/g, '_').slice(0, 10);
+  return normalized || 'CASE';
+};
+
 export interface ExamBundle {
   examId: number;
   examName: string;
@@ -205,7 +210,8 @@ export class SupabaseE2ESeeder {
   }
 
   async createExamBundle(label: string): Promise<ExamBundle> {
-    const levelCode = `E2E_LEVEL_${label}_${randomUUID().slice(0, 8)}`;
+    const codeLabel = toCodeLabel(label);
+    const levelCode = `E2E_LEVEL_${codeLabel}_${randomUUID().slice(0, 8).toUpperCase()}`;
     const levelName = `Level ${label.toUpperCase()}`;
     const baseId = Number((BigInt(Date.now()) % 1_000_000_000n) * 1000n + BigInt(Math.floor(Math.random() * 1000)));
     const levelId = 1_000_000_000 + baseId;
@@ -223,7 +229,7 @@ export class SupabaseE2ESeeder {
       await serviceClient.from('levels').delete().eq('id', level.id);
     });
 
-    const examCode = `E2E_EXAM_${label}_${randomUUID().slice(0, 8)}`;
+    const examCode = `E2E_EXAM_${codeLabel}_${randomUUID().slice(0, 8).toUpperCase()}`;
     const examName = `Exam ${label.toUpperCase()} (${examCode})`;
     const { data: exam, error: examError } = await serviceClient
       .from('exam_types')
@@ -258,12 +264,12 @@ export class SupabaseE2ESeeder {
     const criteriaPayload: Database['public']['Tables']['evaluation_criteria']['Insert'][] = [
       {
         name: `Content (${label})`,
-        criterion_code: `E2E_${label.toUpperCase()}_${criterionSuffix}_CONTENT`,
+        criterion_code: `E2E_${codeLabel}_${criterionSuffix.toUpperCase()}_CONTENT`,
         description: 'E2E criterion placeholder (content).',
       },
       {
         name: `Language (${label})`,
-        criterion_code: `E2E_${label.toUpperCase()}_${criterionSuffix}_LANGUAGE`,
+        criterion_code: `E2E_${codeLabel}_${criterionSuffix.toUpperCase()}_LANGUAGE`,
         description: 'E2E criterion placeholder (language).',
       },
     ];
