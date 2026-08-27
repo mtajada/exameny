@@ -7,6 +7,10 @@
     {
       "path": "supabase/migrations/20260826165415_cleanroom_admin_runtime.sql",
       "sha256": "401702184b2f4409801ce493f5a53e3cf289c8b43981de4c707cf93b74589367"
+    },
+    {
+      "path": "supabase/migrations/20260827075511_disambiguate_save_user_preferences_conflict.sql",
+      "sha256": "5c180dc32b043e70f849b7d750d6bda4cc71e10d02a561b0be69c51b6fa92b3d"
     }
   ],
   "typesSha256": "b0be76cd7ae8c37c52a3a226ef26d05282b343f2857e03c5a2696c28d253682a",

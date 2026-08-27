@@ -3,7 +3,7 @@
 ## Clean-room baseline
 
 The public database is a new, reviewable baseline. It is neither a production
-dump nor a copy of the private migration history. Two ordered migrations rebuild
+dump nor a copy of the private migration history. Three ordered migrations rebuild
 the contracts required by the full application:
 
 1. `20260826153916_initial_public_schema.sql` creates the tenant-aware product
@@ -11,6 +11,9 @@ the contracts required by the full application:
 2. `20260826165415_cleanroom_admin_runtime.sql` adds protected operational
    storage and the service-only RPCs used by administration, invitation, alias,
    and event flows.
+3. `20260827075511_disambiguate_save_user_preferences_conflict.sql` fixes the
+   runtime conflict target in `save_user_preferences` without changing its
+   public signature.
 
 The resulting surface contains 32 `public` tables. Every public table has RLS.
 The internal `private` schema contains three operational tables:

@@ -346,6 +346,28 @@ try {
   assert.equal(Number(await scalar('select public.get_my_academy_id_from_jwt()')), 1)
   assert.equal(Number(await scalar('select count(*) from public.academy_memberships')), 1)
 
+  const savedNamePreferences = await scalar(`
+    select to_jsonb(saved)
+    from public.save_user_preferences(
+      p_full_name => 'Sam Learner',
+      p_full_name_provided => true,
+      p_request_id => '00000000-0000-4000-8001-000000000001'
+    ) saved
+  `)
+  assert.equal(savedNamePreferences.full_name, 'Sam Learner')
+  assert.equal(savedNamePreferences.is_initial_setup_completed, true)
+
+  const savedGoalPreferences = await scalar(`
+    select to_jsonb(saved)
+    from public.save_user_preferences(
+      p_target_exam_id => 1,
+      p_target_level_id => 3,
+      p_request_id => '00000000-0000-4000-8001-000000000002'
+    ) saved
+  `)
+  assert.equal(Number(savedGoalPreferences.target_exam_id), 1)
+  assert.equal(Number(savedGoalPreferences.target_level_id), 3)
+
   const attempt = await scalar(`select to_jsonb(public.start_ruoe_attempt(2001, null))`)
   assert.equal(attempt.membership_id, 103)
   assert.equal(attempt.attempt_number, 1)
