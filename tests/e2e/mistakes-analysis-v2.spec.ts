@@ -3,8 +3,25 @@ import { test, expect } from '@playwright/test';
 import { SupabaseE2ESeeder } from './utils/supabaseAdmin.ts';
 import { signInUser } from './utils/session.ts';
 
+const withDeadline = async <T>(label: string, operation: Promise<T>, timeoutMs = 30_000): Promise<T> => {
+  let timer: ReturnType<typeof setTimeout> | undefined;
+  try {
+    return await Promise.race([
+      operation,
+      new Promise<T>((_, reject) => {
+        timer = setTimeout(() => reject(new Error(`${label} exceeded ${timeoutMs} ms.`)), timeoutMs);
+      }),
+    ]);
+  } finally {
+    if (timer) {
+      clearTimeout(timer);
+    }
+  }
+};
+
 test.describe('Mistakes analysis v2', () => {
   test('renders with partial anchors and refreshes after regenerate', async ({ browser }) => {
+    test.setTimeout(300_000);
     const seeder = new SupabaseE2ESeeder();
     const studentEmail = seeder.randomEmail('mistakes-v2-student');
     const adminEmail = seeder.randomEmail('mistakes-v2-admin');
@@ -55,15 +72,17 @@ test.describe('Mistakes analysis v2', () => {
         throw new Error('E2E spec setup failed: could not find anchored span in submission text.');
       }
 
-      const { submissionId } = await seeder.createSubmission({
-        studentId: userId,
-        membershipId,
-        taskTypeId: examBundle.taskTypeId,
-        submissionText,
-        promptText: 'Write a short paragraph about your preferences.',
+      const { submissionId } = await test.step('seed the evaluated submission', async () => {
+        const submission = await withDeadline('createSubmission', seeder.createSubmission({
+          studentId: userId,
+          membershipId,
+          taskTypeId: examBundle.taskTypeId,
+          submissionText,
+          promptText: 'Write a short paragraph about your preferences.',
+        }));
+        await withDeadline('ensureEvaluation', seeder.ensureEvaluation(submission.submissionId));
+        return submission;
       });
-
-      await seeder.ensureEvaluation(submissionId);
 
       const initialItemsV2 = [
         {
@@ -129,27 +148,33 @@ test.describe('Mistakes analysis v2', () => {
         },
       ];
 
-      await seeder.setEvaluationMistakesV2({
-        submissionId,
-        status: 'completed',
-        itemsV2: initialItemsV2,
-        metricsV2: {
-          total: 3,
-          anchored: 1,
-          ambiguous: 1,
-          not_found: 1,
-          invalid: 0,
-          resolverDurationMs: 12,
-          resolverVersion: 2,
-        },
-        summary: {
-          total: 3,
-          byCategory: { GR: 3 },
-          byTag: { ARTICLE: 1, WORD_ORDER: 2 },
-        },
+      await test.step('seed the initial mistakes analysis', async () => {
+        await withDeadline('setEvaluationMistakesV2', seeder.setEvaluationMistakesV2({
+          submissionId,
+          status: 'completed',
+          itemsV2: initialItemsV2,
+          metricsV2: {
+            total: 3,
+            anchored: 1,
+            ambiguous: 1,
+            not_found: 1,
+            invalid: 0,
+            resolverDurationMs: 12,
+            resolverVersion: 2,
+          },
+          summary: {
+            total: 3,
+            byCategory: { GR: 3 },
+            byTag: { ARTICLE: 1, WORD_ORDER: 2 },
+          },
+        }));
       });
 
       await studentPage.goto(`/evaluation/${submissionId}`);
+
+      await expect(studentPage).toHaveURL(new RegExp(`/evaluation/${submissionId}$`), {
+        timeout: 120_000,
+      });
 
       await expect(studentPage.getByRole('heading', { name: 'Mistakes Analysis' })).toBeVisible({
         timeout: 120_000,

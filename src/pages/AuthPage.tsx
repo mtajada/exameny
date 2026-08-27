@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { Navigate } from 'react-router-dom';
+import { Navigate, useLocation } from 'react-router-dom';
 import { Mail } from 'lucide-react';
 
 import { useAuth } from '@/contexts/useAuth';
@@ -19,6 +19,7 @@ import { determineOnboardingScenario } from '@/components/auth/onboarding/state'
 import { mapFinalizeErrorToCopy } from '@/lib/auth/errorCopy';
 import { resolveAuthMethodFlags, type AuthMethodFlags } from '@/lib/auth/authFlags';
 import { trackProductEvent } from '@/lib/analytics';
+import { resolvePostAuthPath } from '@/lib/auth/redirect';
 
 const AUTH_REDIRECT_PATH = '/auth';
 const MAGIC_LINK_COOLDOWN_MS = 60_000;
@@ -54,6 +55,7 @@ const isOAuthProviderEnabled = (provider: OAuthProvider, flags: AuthMethodFlags)
 };
 
 export default function AuthPage() {
+  const location = useLocation();
   const {
     user,
     logout,
@@ -85,6 +87,7 @@ export default function AuthPage() {
   const [magicLinkStatus, setMagicLinkStatus] = useState<'idle' | 'sending' | 'sent'>('idle');
   const [magicLinkCooldownUntil, setMagicLinkCooldownUntil] = useState<number | null>(null);
   const [isSigningOut, setIsSigningOut] = useState(false);
+  const postAuthPath = useMemo(() => resolvePostAuthPath(location.state), [location.state]);
 
   const redirectTo = useMemo(() => {
     if (typeof window === 'undefined') {
@@ -391,6 +394,7 @@ export default function AuthPage() {
         refreshUserProfile={refreshUserProfile}
         onSignOut={handleSignOut}
         isSigningOut={isSigningOut}
+        postAuthPath={postAuthPath}
       />
     );
   }
@@ -566,6 +570,7 @@ interface AuthenticatedAuthViewProps {
   refreshUserProfile: () => Promise<void>;
   onSignOut: () => Promise<void>;
   isSigningOut: boolean;
+  postAuthPath?: string | null;
 }
 
 export const AuthenticatedAuthView: React.FC<AuthenticatedAuthViewProps> = ({
@@ -586,6 +591,7 @@ export const AuthenticatedAuthView: React.FC<AuthenticatedAuthViewProps> = ({
   refreshUserProfile,
   onSignOut,
   isSigningOut,
+  postAuthPath = null,
 }) => {
   const [selectorState, setSelectorState] = useState<{ pendingAcademyId: number | null; error: EdgeFunctionErrorPayload | null }>({
     pendingAcademyId: null,
@@ -688,7 +694,13 @@ export const AuthenticatedAuthView: React.FC<AuthenticatedAuthViewProps> = ({
   }
 
   if (scenario.kind === 'onboarding') {
-    return <Navigate to="/profile-setup" replace />;
+    return (
+      <Navigate
+        to="/profile-setup"
+        replace
+        state={postAuthPath ? { from: postAuthPath } : undefined}
+      />
+    );
   }
 
   if (scenario.kind === 'selector') {
@@ -705,5 +717,5 @@ export const AuthenticatedAuthView: React.FC<AuthenticatedAuthViewProps> = ({
     );
   }
 
-  return <Navigate to="/dashboard" replace />;
+  return <Navigate to={postAuthPath ?? '/dashboard'} replace />;
 };

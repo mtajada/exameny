@@ -79,6 +79,7 @@ jobs:
             echo "SITE_URL=http://127.0.0.1:8080"
             echo "ALLOWED_ORIGINS=http://127.0.0.1:8080,http://localhost:8080"
             echo "APP_ENV=development"
+            echo "E2E_FIXTURES_ENABLED=true"
             echo "RATE_LIMIT_ALLOW_IN_MEMORY_FALLBACK=true"
             echo "VITE_AUTH_GOOGLE_ENABLED=false"
             echo "VITE_AUTH_MICROSOFT_ENABLED=false"
@@ -114,7 +115,8 @@ jobs:
         with:
           name: local-stack-playwright-failures
           path: |
-            test-results/
+            test-results/**/error-context.md
+            test-results/**/*.png
             /tmp/exameny-functions.log
           if-no-files-found: ignore
           retention-days: 7

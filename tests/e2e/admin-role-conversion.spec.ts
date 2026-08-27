@@ -36,7 +36,11 @@ test('academy admin converts a teacher to student via Members tab', async ({ pag
     await page.getByRole('button', { name: 'Save and continue' }).click();
     await page.waitForURL('**/dashboard**', { timeout: 120_000 });
 
-    await page.goto('/academy/dashboard#members');
+    await expect(page).toHaveURL(/\/academy\/dashboard(?:#overview)?$/, { timeout: 120_000 });
+    const membersLink = page.getByRole('link', { name: 'Members' });
+    await expect(membersLink).toBeVisible({ timeout: 60_000 });
+    await membersLink.click();
+    await expect(page).toHaveURL(/\/academy\/dashboard#members$/);
     await expect(page.getByRole('heading', { name: 'Member management' })).toBeVisible({ timeout: 60_000 });
 
     const memberRow = page.getByRole('row', { name: new RegExp(teacherEmail, 'i') });

@@ -66,6 +66,7 @@ const renderView = (overrideProps: Partial<React.ComponentProps<typeof Authentic
         <Routes>
           <Route path="/auth" element={<AuthenticatedAuthView {...props} />} />
           <Route path="/dashboard" element={<p data-testid="dashboard">dashboard</p>} />
+          <Route path="/evaluation/:submissionId" element={<p data-testid="evaluation">evaluation</p>} />
           <Route path="/platform" element={<p data-testid="platform-console">platform console</p>} />
           <Route path="/profile-setup" element={<p data-testid="profile-setup-screen">profile-setup</p>} />
         </Routes>
@@ -219,6 +220,29 @@ describe('AuthenticatedAuthView', () => {
     expect(screen.getByText('Academy B')).toBeInTheDocument();
   });
 
+  it('asks a student to select an academy before choosing learning goals', () => {
+    renderView({
+      memberships: [
+        createMembership({ membershipId: 1, academyId: 10, academyName: 'Academy A', role: 'student' }),
+        createMembership({ membershipId: 2, academyId: 20, academyName: 'Academy B', role: 'student' }),
+      ],
+      activeAcademyId: null,
+      role: 'student',
+      userPreferences: createPreferences({
+        fullName: 'Ana',
+        targetExamId: null,
+        targetLevelId: null,
+        activeAcademyId: null,
+        isInitialSetupCompleted: false,
+      }),
+      isProfileComplete: false,
+      isNameRequired: false,
+    });
+
+    expect(screen.getByText('Choose your academy')).toBeInTheDocument();
+    expect(screen.queryByTestId('profile-setup-screen')).not.toBeInTheDocument();
+  });
+
   it('redirects platform admins directly to the platform console', () => {
     renderView({
       isPlatformAdmin: true,
@@ -237,6 +261,25 @@ describe('AuthenticatedAuthView', () => {
     });
 
     expect(screen.getByTestId('dashboard')).toBeInTheDocument();
+  });
+
+  it('returns fully onboarded users to the original protected route', () => {
+    renderView({
+      memberships: [createMembership({ academyId: 33 })],
+      activeAcademyId: 33,
+      role: 'student',
+      userPreferences: createPreferences({
+        fullName: 'Ana',
+        targetExamId: 1,
+        targetLevelId: 10,
+        activeAcademyId: 33,
+        isInitialSetupCompleted: true,
+      }),
+      isProfileComplete: true,
+      postAuthPath: '/evaluation/submission-1',
+    });
+
+    expect(screen.getByTestId('evaluation')).toBeInTheDocument();
   });
 
   it('invokes retry callback from waiting screen', () => {

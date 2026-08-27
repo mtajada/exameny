@@ -15,6 +15,10 @@ import {
 } from "../_shared/openai-responses.ts";
 import { assertRateLimit, enforceRateLimit } from "../_shared/rate-limit.ts";
 import {
+  areE2EFixturesEnabled,
+  isLocalSupabaseUrl,
+} from "../_shared/runtime-mode.ts";
+import {
   MistakeValidationError,
   SHORT_SUBMISSION_WORD_THRESHOLD,
   validateShortSubmissionMistakes,
@@ -38,18 +42,12 @@ const SUPABASE_URL = Deno.env.get("SUPABASE_URL");
 const SUPABASE_PUBLISHABLE_KEY = resolveSupabasePublishableKey();
 const EXAMENY_SUPABASE_SECRET_KEY = Deno.env.get("EXAMENY_SUPABASE_SECRET_KEY");
 
-function isLocalSupabaseUrl(url: string | null | undefined): boolean {
-  if (!url) return false;
-  try {
-    const hostname = new URL(url).hostname;
-    return hostname === "127.0.0.1" || hostname === "localhost" ||
-      hostname === "::1";
-  } catch {
-    return false;
-  }
-}
-
 const IS_LOCAL_DEVELOPMENT = isLocalSupabaseUrl(SUPABASE_URL);
+const E2E_FIXTURES_ENABLED = areE2EFixturesEnabled({
+  supabaseUrl: SUPABASE_URL,
+  appEnv: Deno.env.get("APP_ENV"),
+  fixturesFlag: Deno.env.get("E2E_FIXTURES_ENABLED"),
+});
 
 const USER_RATE_LIMIT_MAX = Number(
   Deno.env.get("EVALUATE_SUBMISSION_LIMIT_PER_USER") ?? "30",
@@ -92,8 +90,6 @@ function createUserClient(authorization: string) {
     global: { headers: { Authorization: authorization } },
   });
 }
-
-const responsesClient = createOpenAIResponsesClientFromEnv();
 
 const SCORE_DECIMALS = 1;
 const SCORE_FRACTION_PATTERN = /(\d+(?:[.,]\d+)?)(\s*\/\s*)(\d+(?:[.,]\d+)?)/u;
@@ -273,7 +269,7 @@ function buildDevE2eFixtureResponse(params: {
   criteria: EvaluationPromptData["criteria"];
   submissionText: string;
 }): Record<string, unknown> | null {
-  if (!IS_LOCAL_DEVELOPMENT) return null;
+  if (!E2E_FIXTURES_ENABLED) return null;
   const requestedModelName = params.requestedModelName;
   if (!requestedModelName || !requestedModelName.startsWith("e2e-fixture:")) {
     return null;
@@ -738,7 +734,7 @@ serve(async (req) => {
     requestedModelName = normalizeModelName(body.modelName);
     requestedForce = body.force === true;
     includeDebugMetrics = IS_LOCAL_DEVELOPMENT && body.debugMetrics === true;
-    isFixtureRequest = IS_LOCAL_DEVELOPMENT &&
+    isFixtureRequest = E2E_FIXTURES_ENABLED &&
       typeof requestedModelName === "string" &&
       requestedModelName.startsWith("e2e-fixture:");
     forceEvaluation = requestedForce && resolvedRole !== "student";
@@ -949,8 +945,7 @@ serve(async (req) => {
     );
 
     const submissionTextHash = hashText(submissionText);
-    let bypassCache = forceEvaluation ||
-      (IS_LOCAL_DEVELOPMENT && requestedModelName !== null);
+    let bypassCache = forceEvaluation || isFixtureRequest;
     let cachedEvaluation: EvaluationRow | null = null;
 
     if (!bypassCache || (requestedForce && resolvedRole === "student")) {
@@ -1253,15 +1248,11 @@ serve(async (req) => {
       `[${requestId}] [evaluate-submission] Evaluation instructions prepared.`,
     );
 
-    if (requestedModelName && !IS_LOCAL_DEVELOPMENT) {
+    if (requestedModelName && !isFixtureRequest) {
       console.warn(
         `[${requestId}] [evaluate-submission] Ignoring modelName override outside dev project.`,
       );
     }
-
-    console.log(
-      `[${requestId}] [evaluate-submission] Calling OpenAI Responses for evaluation.`,
-    );
 
     const fixtureResponse = buildDevE2eFixtureResponse({
       requestedModelName,
@@ -1279,6 +1270,10 @@ serve(async (req) => {
       );
       parsedResponse = parseEvaluationResponsesPayload(fixtureResponse);
     } else {
+      console.log(
+        `[${requestId}] [evaluate-submission] Calling OpenAI Responses for evaluation.`,
+      );
+      const responsesClient = createOpenAIResponsesClientFromEnv();
       const responseResult = await responsesClient.generate({
         instructions: evalPrompt.systemPrompt,
         input: [{ role: "user", content: evalPrompt.userPrompt }],

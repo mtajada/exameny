@@ -61,14 +61,15 @@ const createAuthContext = (overrides: Partial<AuthContextType> = {}): AuthContex
 const useAuthMock = vi.mocked(useAuth);
 const dummyUser = { id: 'user-1' } as User;
 
-const renderPage = () => {
+const renderPage = (entry: string | { pathname: string; state?: unknown } = '/profile-setup') => {
   const queryClient = new QueryClient();
   render(
     <QueryClientProvider client={queryClient}>
-      <MemoryRouter initialEntries={['/profile-setup']}>
+      <MemoryRouter initialEntries={[entry]}>
         <Routes>
           <Route path="/profile-setup" element={<ProfileSetupPage />} />
           <Route path="/dashboard" element={<p data-testid="dashboard" />} />
+          <Route path="/evaluation/:submissionId" element={<p data-testid="evaluation" />} />
           <Route path="/platform" element={<p data-testid="platform-console" />} />
           <Route path="/auth" element={<p data-testid="auth-entry" />} />
         </Routes>
@@ -130,6 +131,34 @@ describe('ProfileSetupPage', () => {
     renderPage();
 
     expect(screen.getByTestId('dashboard')).toBeInTheDocument();
+  });
+
+  it('returns ready users to the protected route that requested onboarding', () => {
+    useAuthMock.mockReturnValue(
+      createAuthContext({
+        user: dummyUser,
+        memberships: [createMembership()],
+        activeAcademyId: 1,
+        role: 'student',
+        isProfileComplete: true,
+        isNameRequired: false,
+        userPreferences: {
+          fullName: 'Ana',
+          targetExamId: 1,
+          targetLevelId: 10,
+          activeAcademyId: 1,
+          isInitialSetupCompleted: true,
+          updatedAt: null,
+        },
+      }),
+    );
+
+    renderPage({
+      pathname: '/profile-setup',
+      state: { from: '/evaluation/submission-1' },
+    });
+
+    expect(screen.getByTestId('evaluation')).toBeInTheDocument();
   });
 
   it('redirects platform admins directly to the platform console', () => {

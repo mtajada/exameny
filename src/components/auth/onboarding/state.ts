@@ -53,7 +53,7 @@ export const determineOnboardingScenario = (snapshot: OnboardingSnapshot): Onboa
   const requiresFullName = snapshot.isNameRequired;
   const requiresTargets = needsStudentTargets(snapshot.role, snapshot.userPreferences);
 
-  if (requiresFullName || requiresTargets || snapshot.isProfileComplete === false) {
+  if (requiresFullName) {
     return {
       kind: 'onboarding',
       requiresFullName,
@@ -69,6 +69,15 @@ export const determineOnboardingScenario = (snapshot: OnboardingSnapshot): Onboa
 
   if (snapshot.memberships.length > 1 && !hasValidActiveSelection(snapshot)) {
     return { kind: 'selector' };
+  }
+
+  if (requiresTargets || snapshot.isProfileComplete === false) {
+    return {
+      kind: 'onboarding',
+      requiresFullName,
+      requiresTargets,
+      role: snapshot.role,
+    };
   }
 
   return { kind: 'ready' };

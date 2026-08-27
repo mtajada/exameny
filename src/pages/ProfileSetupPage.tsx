@@ -1,15 +1,17 @@
 import React from 'react';
-import { Navigate } from 'react-router-dom';
+import { Navigate, useLocation } from 'react-router-dom';
 
 import { useAuth } from '@/contexts/useAuth';
 import { deriveGuardScenario } from '@/components/auth/guardState';
 import { AuthShell } from '@/components/auth/AuthShell';
 import { AuthGateLoadingCard } from '@/components/auth/AuthGateLoadingCard';
 import { OnboardingFlow } from '@/components/auth/onboarding/OnboardingFlow';
+import { resolvePostAuthPath } from '@/lib/auth/redirect';
 
 const AUTH_SHELL_WIDTH = 'lg';
 
 export default function ProfileSetupPage() {
+  const location = useLocation();
   const {
     user,
     logout,
@@ -36,6 +38,7 @@ export default function ProfileSetupPage() {
     isProfileComplete,
     isNameRequired,
   });
+  const postAuthPath = resolvePostAuthPath(location.state);
 
   if (!user) {
     return <Navigate to="/auth" replace />;
@@ -56,7 +59,7 @@ export default function ProfileSetupPage() {
   }
 
   if (scenario.kind === 'ready') {
-    return <Navigate to="/dashboard" replace />;
+    return <Navigate to={postAuthPath ?? '/dashboard'} replace />;
   }
 
   if (scenario.kind !== 'onboarding') {

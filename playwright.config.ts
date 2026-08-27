@@ -12,9 +12,9 @@ export default defineConfig({
     launchOptions: {
       args: ['--disable-quic'],
     },
-    trace: 'on-first-retry',
+    trace: process.env.CI ? 'off' : 'retain-on-failure',
     screenshot: 'only-on-failure',
-    video: 'retain-on-failure',
+    video: process.env.CI ? 'off' : 'retain-on-failure',
   },
   projects: [
     {
@@ -28,6 +28,7 @@ export default defineConfig({
       ...process.env,
       VITE_E2E_MODEL_NAME: 'e2e-fixture:mistakes-v2',
       VITE_INCLUDE_E2E_EXAMS: 'true',
+      VITE_MISTAKES_V2: 'true',
     },
     port: 8080,
     timeout: 120_000,

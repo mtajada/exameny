@@ -167,28 +167,6 @@ insert into public.class_members (class_id, membership_id) values
   (1, 103)
 on conflict (class_id, membership_id) do nothing;
 
-insert into public.error_categories (id, code, name, description) values
-  (1, 'GRAMMAR', 'Grammar', 'Form and structure issues that affect clarity.'),
-  (2, 'LEXIS', 'Lexis', 'Word choice and phrase combination issues.'),
-  (3, 'COHESION', 'Cohesion', 'Connections and progression between ideas.'),
-  (4, 'TASK', 'Task', 'Coverage, genre and audience requirements.')
-on conflict (id) do update set
-  code = excluded.code,
-  name = excluded.name,
-  description = excluded.description;
-
-insert into public.error_tags (id, category_id, code, name, description, skills) values
-  (1, 1, 'VERB_FORM', 'Verb form', 'A verb form does not fit the sentence.', array['B1', 'B2', 'C1']),
-  (2, 2, 'WORD_CHOICE', 'Word choice', 'A word does not express the intended meaning.', array['B1', 'B2', 'C1']),
-  (3, 3, 'LINKING', 'Linking', 'The connection between ideas is unclear.', array['B1', 'B2', 'C1']),
-  (4, 4, 'COVERAGE', 'Coverage', 'An important part of the task is missing.', array['B1', 'B2', 'C1'])
-on conflict (id) do update set
-  category_id = excluded.category_id,
-  code = excluded.code,
-  name = excluded.name,
-  description = excluded.description,
-  skills = excluded.skills;
-
 insert into public.ruoe_exercises (
   id, task_type_id, academy_id, author_id, title, content_text,
   teacher_theme, teacher_skill_focus, is_public

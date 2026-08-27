@@ -156,8 +156,26 @@ describe('MistakesAnalysisCard v2 degradable UX', () => {
 
     expect(screen.getByText(/analysis completed with warnings/i)).toBeInTheDocument()
     expect(screen.getByText(/3 discarded/i)).toBeInTheDocument()
-    expect(screen.getByRole('button', { name: /regenerate mistakes analysis/i })).toBeInTheDocument()
-    expect(screen.queryByText(/contact your teacher/i)).not.toBeInTheDocument()
+    expect(screen.queryByRole('button', { name: /regenerate mistakes analysis/i })).not.toBeInTheDocument()
+    expect(screen.getByText(/contact your teacher or academy team/i)).toBeInTheDocument()
     expect(screen.queryByText(/no mistakes detected/i)).not.toBeInTheDocument()
+  })
+
+  it('allows an authorized academy team member to regenerate a warning result', () => {
+    mistakesAnalysisMock.mockReturnValue({
+      ...baseState,
+      status: 'completed_with_warnings',
+      warnings: { unhighlightableItems: 0, discardedItems: 1, unparsedItems: 0 },
+    })
+
+    const queryClient = new QueryClient()
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MistakesAnalysisCard submissionId="submission-1" canRegenerate />
+      </QueryClientProvider>,
+    )
+
+    expect(screen.getByRole('button', { name: /regenerate mistakes analysis/i })).toBeInTheDocument()
+    expect(screen.queryByText(/contact your teacher or academy team/i)).not.toBeInTheDocument()
   })
 })

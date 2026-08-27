@@ -166,9 +166,7 @@ export function MistakesAnalysisCard({
   const displayedStatus: MistakesAnalysisState['status'] = regenerateMistakes.isPending ? 'pending' : analysis.status
   const allowRegenerate = !debugEnabled && (
     isAuthorizedTeacher ||
-    (typeof canRegenerate === 'boolean' ? canRegenerate : false) ||
-    analysis.status === 'completed_with_warnings' ||
-    analysis.status === 'failed'
+    (typeof canRegenerate === 'boolean' ? canRegenerate : false)
   )
   const formattedLastErrorMessage = formatMistakesErrorMessage(analysis.lastErrorMessage)
   const resolvedErrorMessage = analysis.status === 'failed' && !analysis.error
@@ -177,6 +175,9 @@ export function MistakesAnalysisCard({
       : 'The mistakes analysis failed to complete. Please try regenerating the analysis.'
     : analysis.error ?? 'Could not load mistakes.'
   const shouldRenderActionFooter = viewState !== 'loading' && allowRegenerate
+  const shouldShowRegenerationGuidance = !allowRegenerate && (
+    analysis.status === 'completed_with_warnings' || analysis.status === 'failed'
+  )
   const shouldShowFailedWarning = Boolean(analysis.lastErrorMessage) && viewState === 'ready'
 
   useEffect(() => {
@@ -260,6 +261,11 @@ export function MistakesAnalysisCard({
             regenerating={regenerateMistakes.isPending}
             allowRegenerate={allowRegenerate}
           />
+        )}
+        {shouldShowRegenerationGuidance && (
+          <p className="text-sm text-muted-foreground">
+            Contact your teacher or academy team if this analysis needs to be regenerated.
+          </p>
         )}
       </CardContent>
     </Card>

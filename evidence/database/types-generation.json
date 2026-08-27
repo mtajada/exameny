@@ -11,6 +11,10 @@
     {
       "path": "supabase/migrations/20260827075511_disambiguate_save_user_preferences_conflict.sql",
       "sha256": "5c180dc32b043e70f849b7d750d6bda4cc71e10d02a561b0be69c51b6fa92b3d"
+    },
+    {
+      "path": "supabase/migrations/20260827093000_repair_onboarding_state_transitions.sql",
+      "sha256": "33859a847c28dc7691a0ab437aa307b1ff1ca844c9f522ff81d6388efdadba88"
     }
   ],
   "typesSha256": "b0be76cd7ae8c37c52a3a226ef26d05282b343f2857e03c5a2696c28d253682a",

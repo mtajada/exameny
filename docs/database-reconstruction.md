@@ -3,7 +3,7 @@
 ## Clean-room baseline
 
 The public database is a new, reviewable baseline. It is neither a production
-dump nor a copy of the private migration history. Three ordered migrations rebuild
+dump nor a copy of the private migration history. Four ordered migrations rebuild
 the contracts required by the full application:
 
 1. `20260826153916_initial_public_schema.sql` creates the tenant-aware product
@@ -14,6 +14,12 @@ the contracts required by the full application:
 3. `20260827075511_disambiguate_save_user_preferences_conflict.sql` fixes the
    runtime conflict target in `save_user_preferences` without changing its
    public signature.
+4. `20260827093000_repair_onboarding_state_transitions.sql` preserves a valid
+   academy preference, keeps current-membership resolution unambiguous,
+   requires an explicit multi-academy choice, exposes the authenticated user's
+   inactive academy names, supports the intentional no-academy waiting state,
+   installs the complete canonical mistakes taxonomy, and persists the full
+   Mistakes V2 contract through a service-only transaction.
 
 The resulting surface contains 32 `public` tables. Every public table has RLS.
 The internal `private` schema contains three operational tables:
@@ -43,6 +49,9 @@ No legacy `admin` or `audit` schema is recreated.
   layer.
 - administrative role and alias operations are idempotent for sequential
   retries and write their audit record inside the same transaction.
+- evaluation persistence rechecks the actor and academy, validates canonical
+  categories, tags, metrics, and UTF-16 anchor boundaries, and preserves the
+  previous valid mistakes analysis when a regeneration fails.
 
 ## Portability and data rules
 

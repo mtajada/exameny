@@ -12,6 +12,39 @@ const migrations = await Promise.all(
   migrationFiles.map((name) => readFile(`${migrationDirectory}/${name}`, 'utf8')),
 )
 const seed = await readFile(`${root}/supabase/seed.sql`, 'utf8')
+const mistakesPromptSource = await readFile(
+  `${root}/supabase/functions/evaluate-submission/prompt.ts`,
+  'utf8',
+)
+const mistakesNormalizationSource = await readFile(
+  `${root}/supabase/functions/_shared/mistakes.ts`,
+  'utf8',
+)
+
+const extractStringArray = (source, name) => {
+  const match = source.match(
+    new RegExp(`export const ${name} = \\[([\\s\\S]*?)\\] as const`),
+  )
+  assert.ok(match, `Could not find ${name} in the Edge contract`)
+  return [...match[1].matchAll(/"([A-Z_]+)"/g)].map((entry) => entry[1])
+}
+
+const allowedMistakeCategories = extractStringArray(
+  mistakesPromptSource,
+  'ALLOWED_MISTAKE_CATEGORIES',
+)
+const allowedFeatureTags = extractStringArray(
+  mistakesPromptSource,
+  'ALLOWED_FEATURE_TAGS',
+)
+const tagCategoryBlock = mistakesNormalizationSource.match(
+  /const TAG_CATEGORY_LOOKUP[\s\S]*?= new Map[\s\S]*?\(\[([\s\S]*?)\]\);/,
+)
+assert.ok(tagCategoryBlock, 'Could not find TAG_CATEGORY_LOOKUP in the Edge contract')
+const expectedTagCategories = Object.fromEntries(
+  [...tagCategoryBlock[1].matchAll(/\["([A-Z_]+)", "([A-Z]+)"\]/g)]
+    .map((entry) => [entry[1], entry[2]]),
+)
 
 const db = await PGlite.create({ dataDir: 'memory://exameny-public-schema' })
 
@@ -152,6 +185,33 @@ try {
     1,
     'the clean baseline must include one non-exposed internal schema',
   )
+  const databaseCategoryCodes = (await db.query(`
+    select code
+    from public.error_categories
+    order by code
+  `)).rows.map(({ code }) => code)
+  assert.deepEqual(
+    databaseCategoryCodes,
+    [...allowedMistakeCategories].sort(),
+    'the database category catalogue must match the Edge evaluation contract',
+  )
+  const databaseTagCategories = Object.fromEntries((await db.query(`
+    select tag.code, category.code as category_code
+    from public.error_tags tag
+    join public.error_categories category on category.id = tag.category_id
+    order by tag.code
+  `)).rows.map(({ code, category_code }) => [code, category_code]))
+  assert.deepEqual(
+    Object.keys(databaseTagCategories),
+    [...allowedFeatureTags].sort(),
+    'the database tag catalogue must match every allowed Edge feature tag',
+  )
+  assert.deepEqual(
+    databaseTagCategories,
+    Object.fromEntries(Object.entries(expectedTagCategories).sort(([left], [right]) =>
+      left.localeCompare(right))),
+    'every database feature tag must reference its canonical category',
+  )
   assert.equal(
     await scalar(`select has_schema_privilege('service_role', 'private', 'USAGE')`),
     false,
@@ -177,6 +237,7 @@ try {
     'public.admin_prepare_membership_invite(bigint,text,text)',
     'public.update_membership_subscription_dates(bigint,date,date,boolean,boolean,uuid)',
     'public.admin_manage_membership(bigint,uuid,text,text,date,date,boolean,boolean,boolean,text,boolean,uuid)',
+    'public.save_eval_and_mistakes(uuid,jsonb,jsonb,uuid,bigint)',
   ]
   for (const signature of serviceOnlyRpcs) {
     assert.equal(
@@ -202,6 +263,10 @@ try {
     {
       signature: 'public.admin_manage_membership(bigint,uuid,text,text,date,date,boolean,boolean,boolean,text,boolean,uuid)',
       description: 'Service-role-only Edge orchestration RPC for privileged membership mutation.',
+    },
+    {
+      signature: 'public.save_eval_and_mistakes(uuid,jsonb,jsonb,uuid,bigint)',
+      description: 'Service-role-only transaction for authorized evaluation results and complete Mistakes v2 payloads.',
     },
   ]
   for (const { signature, description } of serviceOrchestrationDocs) {
@@ -241,6 +306,7 @@ try {
       'finalize_invited_signup(uuid)',
       'get_my_role_from_jwt()',
       'is_platform_admin(uuid)',
+      'list_user_academies()',
       'resolve_invitation_membership(text,bigint,bigint)',
       'save_user_preferences(text,bigint,bigint,boolean,boolean,uuid)',
       'set_active_academy(bigint,uuid)',
@@ -367,6 +433,127 @@ try {
   `)
   assert.equal(Number(savedGoalPreferences.target_exam_id), 1)
   assert.equal(Number(savedGoalPreferences.target_level_id), 3)
+
+  await db.exec('reset role;')
+  await db.exec(`
+    insert into auth.users (
+      id, aud, role, email, raw_app_meta_data, raw_user_meta_data
+    ) values (
+      '00000000-0000-4000-8000-000000000004',
+      'authenticated',
+      'authenticated',
+      'multi-academy@example.com',
+      '{}',
+      '{}'
+    );
+    insert into public.academies (id, name)
+    values (2, 'North Test Academy'), (3, 'South Test Academy');
+    insert into public.profiles (id, email)
+    values (
+      '00000000-0000-4000-8000-000000000004',
+      'multi-academy@example.com'
+    );
+    insert into public.academy_memberships (
+      id, academy_id, user_id, email, role, status
+    ) values
+      (105, 2, '00000000-0000-4000-8000-000000000004', 'multi-academy@example.com', 'teacher', 'active'),
+      (106, 3, '00000000-0000-4000-8000-000000000004', 'multi-academy@example.com', 'teacher', 'active');
+    set request.jwt.claim.sub = '00000000-0000-4000-8000-000000000004';
+    set request.jwt.claims = '{"sub":"00000000-0000-4000-8000-000000000004","email":"multi-academy@example.com","role":"authenticated"}';
+    set role authenticated;
+  `)
+
+  const multiAcademyFinalize = await scalar(`
+    select to_jsonb(finalized)
+    from public.finalize_invited_signup(
+      '00000000-0000-4000-8001-000000000003'
+    ) finalized
+  `)
+  assert.equal(multiAcademyFinalize.auto_selected_academy_id, null)
+  assert.equal(multiAcademyFinalize.memberships.length, 2)
+  assert.equal(
+    Object.hasOwn(multiAcademyFinalize.metadata_payload.app_metadata, 'active_academy_id'),
+    false,
+  )
+  assert.equal(
+    Object.hasOwn(multiAcademyFinalize.metadata_payload.app_metadata, 'active_membership_id'),
+    false,
+  )
+  assert.equal(await scalar('select public.get_my_academy_id_from_jwt() is null'), true)
+
+  const selectedAcademy = await scalar(`
+    select to_jsonb(selected)
+    from public.set_active_academy(
+      3,
+      '00000000-0000-4000-8001-000000000004'
+    ) selected
+  `)
+  assert.equal(Number(selectedAcademy.membership.academy_id), 3)
+  assert.equal(Number(await scalar('select public.get_my_academy_id_from_jwt()')), 3)
+
+  const preservedSelection = await scalar(`
+    select to_jsonb(finalized)
+    from public.finalize_invited_signup(
+      '00000000-0000-4000-8001-000000000005'
+    ) finalized
+  `)
+  assert.equal(Number(preservedSelection.auto_selected_academy_id), 3)
+
+  await db.exec('reset role;')
+  await db.exec(`
+    update public.academy_memberships
+    set status = 'inactive'
+    where user_id = '00000000-0000-4000-8000-000000000004';
+    set request.jwt.claim.sub = '00000000-0000-4000-8000-000000000004';
+    set request.jwt.claims = '{"sub":"00000000-0000-4000-8000-000000000004","email":"multi-academy@example.com","role":"authenticated"}';
+    set role authenticated;
+  `)
+
+  const inactiveAcademies = await scalar(`
+    select to_jsonb(listed)
+    from public.list_user_academies() listed
+  `)
+  assert.equal(inactiveAcademies.active_academies.length, 0)
+  assert.deepEqual(
+    inactiveAcademies.inactive_academies.map(({ academy_name }) => academy_name),
+    ['North Test Academy', 'South Test Academy'],
+  )
+
+  const inactiveFinalize = await scalar(`
+    select to_jsonb(finalized)
+    from public.finalize_invited_signup(
+      '00000000-0000-4000-8001-000000000006'
+    ) finalized
+  `)
+  assert.equal(inactiveFinalize.memberships.length, 0)
+  assert.equal(inactiveFinalize.memberships_inactive.length, 2)
+  assert.equal(inactiveFinalize.auto_selected_academy_id, null)
+
+  await db.exec('reset role;')
+  await db.exec(`
+    delete from public.academy_memberships
+    where user_id = '00000000-0000-4000-8000-000000000004';
+    set request.jwt.claim.sub = '00000000-0000-4000-8000-000000000004';
+    set request.jwt.claims = '{"sub":"00000000-0000-4000-8000-000000000004","email":"multi-academy@example.com","role":"authenticated"}';
+    set role authenticated;
+  `)
+
+  const noAcademyFinalize = await scalar(`
+    select to_jsonb(finalized)
+    from public.finalize_invited_signup(
+      '00000000-0000-4000-8001-000000000007'
+    ) finalized
+  `)
+  assert.equal(noAcademyFinalize.memberships.length, 0)
+  assert.equal(noAcademyFinalize.memberships_inactive.length, 0)
+  assert.equal(noAcademyFinalize.auto_selected_academy_id, null)
+
+  await db.exec(`
+    reset role;
+    set request.jwt.claim.sub = '00000000-0000-4000-8000-000000000003';
+    set request.jwt.claims = '{"sub":"00000000-0000-4000-8000-000000000003","email":"student@example.com","role":"authenticated"}';
+    set role authenticated;
+  `)
 
   const attempt = await scalar(`select to_jsonb(public.start_ruoe_attempt(2001, null))`)
   assert.equal(attempt.membership_id, 103)
@@ -568,6 +755,487 @@ try {
     1,
   )
 
+  const evaluationPayload = {
+    overallScore: '4/5',
+    criteriaEvaluation: [
+      {
+        criterionName: 'Content',
+        score: '4/5',
+        feedback: 'The proposal answers the task with a practical suggestion.',
+      },
+    ],
+    overallCommentary: 'Database V2 contract.',
+  }
+  const completedMistakesPayload = {
+    status: 'completed',
+    items: [
+      {
+        category_id: 1,
+        category_code: 'GR',
+        tag_id: 1,
+        tag_code: 'VERB_FORM',
+        anchor_text: 'centre',
+        anchor_start: 4,
+        anchor_end: 10,
+        suggested_correction: null,
+        explanation: 'Database V2 contract item.',
+        meta: { source: 'database-smoke' },
+      },
+    ],
+    summary: {
+      total: 1,
+      byCategory: { GR: 1 },
+      byTag: { VERB_FORM: 1 },
+    },
+    items_v2: [
+      {
+        category: 'GR',
+        categoryId: 1,
+        featureTags: ['VERB_FORM'],
+        primaryTag: 'VERB_FORM',
+        primaryTagId: 1,
+        anchorPatch: {
+          before: 'centre',
+          after: null,
+          contextBefore: 'The ',
+          contextAfter: ' could',
+        },
+        anchorResolution: {
+          status: 'anchored',
+          start: 4,
+          end: 10,
+          strategy: 'before_unique',
+        },
+        explanation: 'Database V2 contract item.',
+        suggestedCorrection: null,
+        suggestedTag: null,
+        meta: {},
+      },
+    ],
+    metrics_v2: {
+      total: 1,
+      anchored: 1,
+      ambiguous: 0,
+      not_found: 0,
+      invalid: 0,
+      resolverVersion: 2,
+      resolverDurationMs: 1,
+    },
+  }
+  await assert.rejects(
+    () => db.query(
+      `select public.save_eval_and_mistakes($1, $2::jsonb, $3::jsonb, $4, $5)`,
+      [
+        '00000000-0000-4000-8002-000000000001',
+        JSON.stringify(evaluationPayload),
+        JSON.stringify(completedMistakesPayload),
+        '00000000-0000-4000-8000-000000000003',
+        2,
+      ],
+    ),
+    /ACTOR_ACADEMY_MISMATCH/,
+    'a service request must not attach a learner evaluation to another academy',
+  )
+  await assert.rejects(
+    () => db.query(
+      `select public.save_eval_and_mistakes($1, $2::jsonb, $3::jsonb, $4, $5)`,
+      [
+        '00000000-0000-4000-8002-000000000001',
+        JSON.stringify(evaluationPayload),
+        JSON.stringify(completedMistakesPayload),
+        '00000000-0000-4000-8000-000000000004',
+        1,
+      ],
+    ),
+    /ACTOR_NOT_AUTHORIZED/,
+    'a service request must still prove that the actor belongs to the academy',
+  )
+  await db.query(
+    `select public.save_eval_and_mistakes($1, $2::jsonb, $3::jsonb, $4, $5)`,
+    [
+      '00000000-0000-4000-8002-000000000001',
+      JSON.stringify(evaluationPayload),
+      JSON.stringify(completedMistakesPayload),
+      '00000000-0000-4000-8000-000000000002',
+      1,
+    ],
+  )
+  await db.query(
+    `select public.save_eval_and_mistakes($1, $2::jsonb, $3::jsonb, $4, $5)`,
+    [
+      '00000000-0000-4000-8002-000000000001',
+      JSON.stringify(evaluationPayload),
+      JSON.stringify(completedMistakesPayload),
+      '00000000-0000-4000-8000-000000000003',
+      1,
+    ],
+  )
+  const completedEvaluation = await scalar(`
+    select jsonb_build_object(
+      'items', ai_mistakes_items_v2,
+      'metrics', ai_mistakes_metrics_v2,
+      'summary', ai_mistakes_summary,
+      'status', ai_mistakes_status,
+      'error', ai_mistakes_error
+    )
+    from public.evaluations
+    where submission_id = '00000000-0000-4000-8002-000000000001'
+  `)
+  assert.equal(completedEvaluation.status, 'completed')
+  assert.equal(completedEvaluation.error, null)
+  assert.equal(completedEvaluation.items.length, 1)
+  assert.equal(completedEvaluation.items[0].explanation, 'Database V2 contract item.')
+  assert.equal(Number(completedEvaluation.metrics.resolverVersion), 2)
+  assert.equal(Number(completedEvaluation.summary.total), 1)
+  assert.equal(
+    Number(await scalar(`
+      select count(*)
+      from public.mistakes
+      where writing_submission_id = '00000000-0000-4000-8002-000000000001'
+        and anchor_text = 'centre'
+    `)),
+    1,
+  )
+
+  const inconsistentStatusPayload = structuredClone(completedMistakesPayload)
+  inconsistentStatusPayload.items_v2[0].anchorResolution.status = 'ambiguous'
+  await assert.rejects(
+    () => db.query(
+      `select public.save_eval_and_mistakes($1, $2::jsonb, $3::jsonb, $4, $5)`,
+      [
+        '00000000-0000-4000-8002-000000000001',
+        JSON.stringify(evaluationPayload),
+        JSON.stringify(inconsistentStatusPayload),
+        '00000000-0000-4000-8000-000000000003',
+        1,
+      ],
+    ),
+    /INCONSISTENT_MISTAKES_METRICS/,
+    'metrics must match the resolution statuses stored in items_v2',
+  )
+
+  const inconsistentSummaryPayload = structuredClone(completedMistakesPayload)
+  inconsistentSummaryPayload.summary.byCategory = { LX: 99 }
+  await assert.rejects(
+    () => db.query(
+      `select public.save_eval_and_mistakes($1, $2::jsonb, $3::jsonb, $4, $5)`,
+      [
+        '00000000-0000-4000-8002-000000000001',
+        JSON.stringify(evaluationPayload),
+        JSON.stringify(inconsistentSummaryPayload),
+        '00000000-0000-4000-8000-000000000003',
+        1,
+      ],
+    ),
+    /INCONSISTENT_MISTAKES_SUMMARY/,
+    'summary counts must be derived from the canonical items_v2 payload',
+  )
+
+  const mismatchedLegacyPayload = structuredClone(completedMistakesPayload)
+  mismatchedLegacyPayload.items[0].explanation = 'Contradicts the V2 item.'
+  await assert.rejects(
+    () => db.query(
+      `select public.save_eval_and_mistakes($1, $2::jsonb, $3::jsonb, $4, $5)`,
+      [
+        '00000000-0000-4000-8002-000000000001',
+        JSON.stringify(evaluationPayload),
+        JSON.stringify(mismatchedLegacyPayload),
+        '00000000-0000-4000-8000-000000000003',
+        1,
+      ],
+    ),
+    /MISTAKES_V2_LEGACY_ITEM_MISMATCH/,
+    'each anchored V2 item must match the corresponding normalized legacy row',
+  )
+
+  const mismatchedV2CategoryIdPayload = structuredClone(completedMistakesPayload)
+  mismatchedV2CategoryIdPayload.items_v2[0].categoryId = 2
+  await assert.rejects(
+    () => db.query(
+      `select public.save_eval_and_mistakes($1, $2::jsonb, $3::jsonb, $4, $5)`,
+      [
+        '00000000-0000-4000-8002-000000000001',
+        JSON.stringify(evaluationPayload),
+        JSON.stringify(mismatchedV2CategoryIdPayload),
+        '00000000-0000-4000-8000-000000000003',
+        1,
+      ],
+    ),
+    /INVALID_MISTAKES_V2_ITEM/,
+    'the V2 category ID must match its canonical category code',
+  )
+
+  const mismatchedV2PrimaryTagPayload = structuredClone(completedMistakesPayload)
+  mismatchedV2PrimaryTagPayload.items_v2[0].primaryTagId = 2
+  await assert.rejects(
+    () => db.query(
+      `select public.save_eval_and_mistakes($1, $2::jsonb, $3::jsonb, $4, $5)`,
+      [
+        '00000000-0000-4000-8002-000000000001',
+        JSON.stringify(evaluationPayload),
+        JSON.stringify(mismatchedV2PrimaryTagPayload),
+        '00000000-0000-4000-8000-000000000003',
+        1,
+      ],
+    ),
+    /MISTAKES_V2_PRIMARY_TAG_MISMATCH/,
+    'the V2 primary tag ID must match its canonical tag and category',
+  )
+
+  assert.equal(
+    Number(await scalar(`
+      select count(*)
+      from public.mistakes
+      where writing_submission_id = '00000000-0000-4000-8002-000000000001'
+        and anchor_text = 'centre'
+    `)),
+    1,
+    'contradictory payloads must preserve the last valid analysis',
+  )
+
+  const mismatchedTagPayload = structuredClone(completedMistakesPayload)
+  mismatchedTagPayload.items[0].tag_id = 2
+  await assert.rejects(
+    () => db.query(
+      `select public.save_eval_and_mistakes($1, $2::jsonb, $3::jsonb, $4, $5)`,
+      [
+        '00000000-0000-4000-8002-000000000001',
+        JSON.stringify(evaluationPayload),
+        JSON.stringify(mismatchedTagPayload),
+        '00000000-0000-4000-8000-000000000003',
+        1,
+      ],
+    ),
+    /MISTAKES_V2_LEGACY_ITEM_MISMATCH/,
+  )
+  assert.equal(
+    Number(await scalar(`
+      select count(*)
+      from public.mistakes
+      where writing_submission_id = '00000000-0000-4000-8002-000000000001'
+        and anchor_text = 'centre'
+    `)),
+    1,
+    'a rejected payload must roll back the evaluation and mistake replacement',
+  )
+
+  await db.exec(`
+    update public.profiles
+    set role = 'platform_owner'
+    where id = '00000000-0000-4000-8000-000000000001';
+  `)
+  await db.query(
+    `select public.save_eval_and_mistakes($1, $2::jsonb, $3::jsonb, $4, $5)`,
+    [
+      '00000000-0000-4000-8002-000000000001',
+      JSON.stringify(evaluationPayload),
+      JSON.stringify(completedMistakesPayload),
+      '00000000-0000-4000-8000-000000000001',
+      null,
+    ],
+  )
+  await db.exec(`
+    update public.profiles
+    set role = null
+    where id = '00000000-0000-4000-8000-000000000001';
+  `)
+
+  await db.exec(`
+    insert into public.submissions (
+      id,
+      student_membership_id,
+      student_id,
+      task_type_id,
+      ai_generated_prompt_text,
+      submission_text,
+      word_count,
+      status,
+      writing_mode,
+      submitted_at
+    ) values (
+      '00000000-0000-4000-8002-000000000002',
+      103,
+      '00000000-0000-4000-8000-000000000003',
+      1001,
+      'Identify one issue in this synthetic sentence.',
+      'Hi 👋 error',
+      3,
+      'submitted',
+      'practice',
+      statement_timestamp()
+    );
+  `)
+  const emojiMistakesPayload = structuredClone(completedMistakesPayload)
+  emojiMistakesPayload.items[0] = {
+    ...emojiMistakesPayload.items[0],
+    anchor_text: 'error',
+    anchor_start: 6,
+    anchor_end: 11,
+  }
+  emojiMistakesPayload.items_v2[0] = {
+    ...emojiMistakesPayload.items_v2[0],
+    anchorPatch: {
+      before: 'error',
+      after: null,
+      contextBefore: 'Hi 👋 ',
+      contextAfter: '',
+    },
+    anchorResolution: {
+      status: 'anchored',
+      start: 6,
+      end: 11,
+      strategy: 'before_unique',
+    },
+  }
+  await db.query(
+    `select public.save_eval_and_mistakes($1, $2::jsonb, $3::jsonb, $4, $5)`,
+    [
+      '00000000-0000-4000-8002-000000000002',
+      JSON.stringify(evaluationPayload),
+      JSON.stringify(emojiMistakesPayload),
+      '00000000-0000-4000-8000-000000000003',
+      1,
+    ],
+  )
+  assert.equal(
+    await scalar(`
+      select anchor_text
+      from public.mistakes
+      where writing_submission_id = '00000000-0000-4000-8002-000000000002'
+    `),
+    'error',
+    'JavaScript UTF-16 offsets must remain correct after an astral character',
+  )
+  const splitSurrogatePayload = structuredClone(emojiMistakesPayload)
+  splitSurrogatePayload.items[0].anchor_start = 4
+  splitSurrogatePayload.items_v2[0].anchorResolution.start = 4
+  await assert.rejects(
+    () => db.query(
+      `select public.save_eval_and_mistakes($1, $2::jsonb, $3::jsonb, $4, $5)`,
+      [
+        '00000000-0000-4000-8002-000000000002',
+        JSON.stringify(evaluationPayload),
+        JSON.stringify(splitSurrogatePayload),
+        '00000000-0000-4000-8000-000000000003',
+        1,
+      ],
+    ),
+    /INVALID_MISTAKE_ANCHOR/,
+    'an offset inside a UTF-16 surrogate pair must be rejected',
+  )
+  assert.equal(
+    await scalar(`
+      select anchor_text
+      from public.mistakes
+      where writing_submission_id = '00000000-0000-4000-8002-000000000002'
+    `),
+    'error',
+    'a rejected UTF-16 offset must preserve the previous valid analysis',
+  )
+
+  const discardedInvalidPayload = {
+    status: 'completed',
+    items: [],
+    summary: { total: 1, byCategory: {}, byTag: {} },
+    items_v2: [],
+    metrics_v2: {
+      total: 1,
+      anchored: 0,
+      ambiguous: 0,
+      not_found: 0,
+      invalid: 1,
+      resolverVersion: 2,
+      resolverDurationMs: 1,
+    },
+  }
+  await db.query(
+    `select public.save_eval_and_mistakes($1, $2::jsonb, $3::jsonb, $4, $5)`,
+    [
+      '00000000-0000-4000-8002-000000000002',
+      JSON.stringify(evaluationPayload),
+      JSON.stringify(discardedInvalidPayload),
+      '00000000-0000-4000-8000-000000000003',
+      1,
+    ],
+  )
+  assert.equal(
+    Number(await scalar(`
+      select ai_mistakes_metrics_v2 ->> 'invalid'
+      from public.evaluations
+      where submission_id = '00000000-0000-4000-8002-000000000002'
+    `)),
+    1,
+    'metrics may account for a rejected candidate that has no V2 item',
+  )
+
+  const explicitInvalidPayload = structuredClone(discardedInvalidPayload)
+  explicitInvalidPayload.items_v2 = [structuredClone(emojiMistakesPayload.items_v2[0])]
+  explicitInvalidPayload.items_v2[0].anchorResolution = { status: 'invalid' }
+  explicitInvalidPayload.summary = {
+    total: 1,
+    byCategory: { GR: 1 },
+    byTag: { VERB_FORM: 1 },
+  }
+  await db.query(
+    `select public.save_eval_and_mistakes($1, $2::jsonb, $3::jsonb, $4, $5)`,
+    [
+      '00000000-0000-4000-8002-000000000002',
+      JSON.stringify(evaluationPayload),
+      JSON.stringify(explicitInvalidPayload),
+      '00000000-0000-4000-8000-000000000003',
+      1,
+    ],
+  )
+  assert.equal(
+    Number(await scalar(`
+      select jsonb_array_length(ai_mistakes_items_v2)
+      from public.evaluations
+      where submission_id = '00000000-0000-4000-8002-000000000002'
+    `)),
+    1,
+    'an explicitly invalid V2 item remains available for diagnostics',
+  )
+
+  await db.query(
+    `select public.save_eval_and_mistakes($1, $2::jsonb, $3::jsonb, $4, $5)`,
+    [
+      '00000000-0000-4000-8002-000000000001',
+      JSON.stringify(evaluationPayload),
+      JSON.stringify({
+        status: 'failed',
+        items: [],
+        summary: { byCategory: {}, byTag: {} },
+        error: 'normalization_failed',
+      }),
+      '00000000-0000-4000-8000-000000000003',
+      1,
+    ],
+  )
+  const failedEvaluation = await scalar(`
+    select jsonb_build_object(
+      'items', ai_mistakes_items_v2,
+      'metrics', ai_mistakes_metrics_v2,
+      'summary', ai_mistakes_summary,
+      'status', ai_mistakes_status,
+      'error', ai_mistakes_error
+    )
+    from public.evaluations
+    where submission_id = '00000000-0000-4000-8002-000000000001'
+  `)
+  assert.equal(failedEvaluation.status, 'failed')
+  assert.equal(failedEvaluation.error, 'normalization_failed')
+  assert.equal(failedEvaluation.items.length, 1)
+  assert.equal(Number(failedEvaluation.metrics.resolverVersion), 2)
+  assert.equal(Number(failedEvaluation.summary.total), 1)
+  assert.equal(
+    Number(await scalar(`
+      select count(*)
+      from public.mistakes
+      where writing_submission_id = '00000000-0000-4000-8002-000000000001'
+    `)),
+    1,
+  )
+
   await db.query(
     `select public.save_evaluation_and_update_submission($1, $2, $3::jsonb, $4)`,
     [
@@ -746,7 +1414,7 @@ try {
   )
   assert.equal(typeof resetMembership.metadata_targets[0].metadata_payload, 'object')
   await db.exec('reset role;')
-  assert.equal(Number(await scalar(`select count(*) from auth.users`)), 3)
+  assert.equal(Number(await scalar(`select count(*) from auth.users`)), 4)
   await db.exec('set role service_role;')
 
   await assert.rejects(

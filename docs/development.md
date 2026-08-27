@@ -88,6 +88,8 @@ their own secret stores.
   properties are sent; email domains, free text, IDs, and raw errors are excluded.
 - `OPENAI_API_KEY` and provider credentials are server-only.
 - `OPENAI_MODEL` defaults to `gpt-5.6-luna` in the documented setup.
+- `E2E_FIXTURES_ENABLED` remains `false` outside the disposable local stack;
+  the Edge runtime also rejects fixture mode for hosted Supabase URLs.
 - optional mail and distributed-rate-limit adapters may remain empty locally.
 
 Validate the example or a private production file without printing values:
