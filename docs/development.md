@@ -52,6 +52,10 @@ supabase status
 Copy only the local API URL and local publishable key shown by the CLI into the
 ignored `.env.local`. Put server-only values in an ignored Edge Function env
 file. Do not prefix a service credential or `OPENAI_API_KEY` with `VITE_`.
+Edge Functions use `SUPABASE_URL`, `EXAMENY_SUPABASE_SECRET_KEY`, and the
+non-secret `EXAMENY_SUPABASE_PUBLISHABLE_KEY`; the browser uses the separate
+`VITE_` names. The integration workflow derives all three from the disposable
+local stack and masks the generated values in its log.
 
 Run the frontend and functions in separate terminals:
 
@@ -77,6 +81,8 @@ matching `.env*` are ignored except for the example. CI and deployments must use
 their own secret stores.
 
 - `VITE_SUPABASE_URL` and `VITE_SUPABASE_PUBLISHABLE_KEY` may reach the browser.
+- `EXAMENY_SUPABASE_PUBLISHABLE_KEY` is the corresponding non-secret key name
+  for Edge Functions; never replace the publishable key with a service key.
 - `VITE_ENABLE_ANALYTICS` defaults to `false`.
 - when analytics is enabled, only curated event names and low-cardinality
   properties are sent; email domains, free text, IDs, and raw errors are excluded.

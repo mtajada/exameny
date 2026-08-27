@@ -75,6 +75,7 @@ jobs:
           umask 077
           {
             echo "EXAMENY_SUPABASE_SECRET_KEY=$SERVICE_ROLE_KEY"
+            echo "EXAMENY_SUPABASE_PUBLISHABLE_KEY=$ANON_KEY"
             echo "SITE_URL=http://127.0.0.1:8080"
             echo "ALLOWED_ORIGINS=http://127.0.0.1:8080,http://localhost:8080"
             echo "APP_ENV=development"
