@@ -40,7 +40,7 @@ Date: 2026-08-27
 - preferences conflict migration SHA-256:
   `5c180dc32b043e70f849b7d750d6bda4cc71e10d02a561b0be69c51b6fa92b3d`.
 - onboarding, taxonomy, and evaluation persistence migration SHA-256:
-  `33859a847c28dc7691a0ab437aa307b1ff1ca844c9f522ff81d6388efdadba88`.
+  `f555352650611ce2fa9658a12156720e243f3cd107712ffc36d6e0eaef62dbd9`.
 - generated public types SHA-256:
   `b0be76cd7ae8c37c52a3a226ef26d05282b343f2857e03c5a2696c28d253682a`.
 

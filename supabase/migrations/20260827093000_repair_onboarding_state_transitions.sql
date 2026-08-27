@@ -328,7 +328,6 @@ security invoker
 set search_path = ''
 as $$
 declare
-  v_character_index integer;
   v_character text;
   v_utf16_offset integer := 0;
 begin

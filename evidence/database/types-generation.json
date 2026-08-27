@@ -14,7 +14,7 @@
     },
     {
       "path": "supabase/migrations/20260827093000_repair_onboarding_state_transitions.sql",
-      "sha256": "33859a847c28dc7691a0ab437aa307b1ff1ca844c9f522ff81d6388efdadba88"
+      "sha256": "f555352650611ce2fa9658a12156720e243f3cd107712ffc36d6e0eaef62dbd9"
     }
   ],
   "typesSha256": "b0be76cd7ae8c37c52a3a226ef26d05282b343f2857e03c5a2696c28d253682a",

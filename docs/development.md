@@ -74,6 +74,9 @@ npm run test:e2e
 npm run supabase:stop
 ```
 
+Authenticated E2E files run serially because they share one ephemeral local
+Supabase stack.
+
 ## Environment contract
 
 `.env.example` separates browser-safe names from server-only names. Local files
