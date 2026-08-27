@@ -90,7 +90,6 @@ jobs:
           set -euo pipefail
           nohup supabase functions serve \
             --env-file supabase/.env.ci \
-            --import-map supabase/import_map.json \
             > /tmp/exameny-functions.log 2>&1 &
           for attempt in {1..45}; do
             if grep -q "Serving functions" /tmp/exameny-functions.log; then

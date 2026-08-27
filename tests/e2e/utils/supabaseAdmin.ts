@@ -57,6 +57,19 @@ const toCodeLabel = (label: string) => {
   return normalized || 'CASE';
 };
 
+const createCode = (prefix: string, label: string, maxLength: number) => {
+  const suffix = randomUUID().slice(0, 8).toUpperCase();
+  const labelBudget = maxLength - prefix.length - suffix.length - 2;
+  const codeLabel = toCodeLabel(label).slice(0, labelBudget);
+  const code = `${prefix}_${codeLabel}_${suffix}`;
+
+  if (!new RegExp(`^[A-Z][A-Z0-9_]{1,${maxLength - 1}}$`).test(code)) {
+    throw new Error(`Unable to create a valid E2E code with prefix ${prefix}.`);
+  }
+
+  return code;
+};
+
 export interface ExamBundle {
   examId: number;
   examName: string;
@@ -210,8 +223,7 @@ export class SupabaseE2ESeeder {
   }
 
   async createExamBundle(label: string): Promise<ExamBundle> {
-    const codeLabel = toCodeLabel(label);
-    const levelCode = `E2E_LEVEL_${codeLabel}_${randomUUID().slice(0, 8).toUpperCase()}`;
+    const levelCode = createCode('LV', label, 16);
     const levelName = `Level ${label.toUpperCase()}`;
     const baseId = Number((BigInt(Date.now()) % 1_000_000_000n) * 1000n + BigInt(Math.floor(Math.random() * 1000)));
     const levelId = 1_000_000_000 + baseId;
@@ -229,7 +241,7 @@ export class SupabaseE2ESeeder {
       await serviceClient.from('levels').delete().eq('id', level.id);
     });
 
-    const examCode = `E2E_EXAM_${codeLabel}_${randomUUID().slice(0, 8).toUpperCase()}`;
+    const examCode = createCode('EX', label, 32);
     const examName = `Exam ${label.toUpperCase()} (${examCode})`;
     const { data: exam, error: examError } = await serviceClient
       .from('exam_types')
@@ -243,7 +255,7 @@ export class SupabaseE2ESeeder {
       await serviceClient.from('exam_types').delete().eq('id', exam.id);
     });
 
-    const taskCode = `${examCode}_${levelCode}_TASK`;
+    const taskCode = createCode('TASK', label, 64);
     const { error: taskError } = await serviceClient.from('exam_task_types').insert({
       id: taskId,
       exam_type_id: exam.id,
@@ -260,16 +272,15 @@ export class SupabaseE2ESeeder {
       await serviceClient.from('exam_task_types').delete().eq('task_code', taskCode);
     });
 
-    const criterionSuffix = randomUUID().slice(0, 8);
     const criteriaPayload: Database['public']['Tables']['evaluation_criteria']['Insert'][] = [
       {
         name: `Content (${label})`,
-        criterion_code: `E2E_${codeLabel}_${criterionSuffix.toUpperCase()}_CONTENT`,
+        criterion_code: createCode('CR_CONTENT', label, 48),
         description: 'E2E criterion placeholder (content).',
       },
       {
         name: `Language (${label})`,
-        criterion_code: `E2E_${codeLabel}_${criterionSuffix.toUpperCase()}_LANGUAGE`,
+        criterion_code: createCode('CR_LANGUAGE', label, 48),
         description: 'E2E criterion placeholder (language).',
       },
     ];
