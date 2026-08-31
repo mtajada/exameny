@@ -29,8 +29,8 @@ npm run dev -- --host 127.0.0.1 --port 8080
 Open `http://127.0.0.1:8080/demo`. The demo contains eight clean-room activity
 types, learner/teacher/academy workflow views, and a speaking rehearsal. It does
 not record audio, retain answers, sign in, contact Supabase, or call an AI model.
-See the [verified demo walkthrough](docs/demo.md) for the tested routes and
-synthetic screenshots.
+See the [contributor demo walkthrough](docs/demo.md) for the fixture sources,
+service boundary, tested routes, and synthetic screenshots.
 
 Verify that boundary in Chromium:
 
