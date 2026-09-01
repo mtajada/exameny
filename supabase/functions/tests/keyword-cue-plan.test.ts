@@ -34,7 +34,7 @@ Deno.test("assertKeywordCueIntegrity normalises smart apostrophes to ASCII", () 
   assert(cue, "expected apostrophe keyword in C1 cue bank");
   const curlyKeywordCue: KeywordCue = {
     ...cue,
-    keyword: cue.keyword.replace("'", "\u2019"),
+    keyword: cue.keyword.replaceAll("'", "\u2019"),
   };
   assertKeywordCueIntegrity(curlyKeywordCue);
 });
