@@ -52,8 +52,19 @@ const isLikelyTitle = (text: string, options?: { allowNumbers?: boolean }): bool
 
 const stripHtml = (value: string): string => value.replace(HTML_TAG_PATTERN, '').trim();
 
-const applyStrongFormatting = (value: string): string =>
-  escapeHtml(value).replace(DOUBLE_STRONG_PATTERN, '<strong>$1</strong>');
+const applyStrongFormatting = (value: string): string => {
+  let rendered = '';
+  let cursor = 0;
+
+  for (const match of value.matchAll(DOUBLE_STRONG_PATTERN)) {
+    const matchIndex = match.index ?? cursor;
+    rendered += escapeHtml(value.slice(cursor, matchIndex));
+    rendered += `<strong>${escapeHtml(match[1] ?? '')}</strong>`;
+    cursor = matchIndex + match[0].length;
+  }
+
+  return rendered + escapeHtml(value.slice(cursor));
+};
 
 const deriveHeadingAndBody = (raw: string): { heading?: string; body: string } => {
   const lines = raw
