@@ -113,7 +113,7 @@
     "remark-gfm": "^4.0.1",
     "tailwind-merge": "^2.6.0",
     "vaul": "^0.9.3",
-    "zod": "^3.25.76"
+    "zod": "^4.6.6"
   },
   "devDependencies": {
     "@cyclonedx/cyclonedx-npm": "^6.0.1",
